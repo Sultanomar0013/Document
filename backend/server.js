@@ -8,8 +8,8 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 const app = express();
 const dotenv = require('dotenv');
-const sginupMiddleware = require(.middleware/login.js);
-const loginMiddleware = require(.middleware/login.js);
+const sginupMiddleware = require(.middleware / login.js);
+const loginMiddleware = require(.middleware / login.js);
 
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET;
@@ -32,26 +32,26 @@ const io = socketIo(server, {
 app.use(express.json());
 const saltRounds = 10;
 
-app.post('/api/signup',sginupMiddleware (req, res) => {
+app.post('/api/signup', sginupMiddleware(req, res) => {
   const { email, userName, hashedPassword } = req.body;
 
-    const query = 'INSERT INTO user (email, userName, password) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO user (email, userName, password) VALUES (?, ?, ?)';
   db.query(query, [email, userName, hashedPassword], (err, result) => {
-      if (err) {
-          console.error('Error inserting user data:', err);
-          return res.status(500).json({ success: false, message: 'Sign-in failed' });
-      }
-      res.json({ success: true, message: 'Sign-in successful' });
-    })
+    if (err) {
+      console.error('Error inserting user data:', err);
+      return res.status(500).json({ success: false, message: 'Sign-in failed' });
+    }
+    res.json({ success: true, message: 'Sign-in successful' });
+  })
 });
 
 
 
 
-app.post('/api/login',loginMiddleware (req, res)=>{
+app.post('/api/login', loginMiddleware(req, res)=> {
   const user = req.user
 
-  const token = jwt.sign({ id: user.id, email: user.email},
+  const token = jwt.sign({ id: user.id, email: user.email },
     jwtSecret,
     { expiresIn: '7h' })
 

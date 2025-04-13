@@ -1,6 +1,7 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
+import { Grid, TextField, Button, Typography, Paper } from '@mui/material';
 
 
 
@@ -31,28 +32,28 @@ function LogIn() {
             body: JSON.stringify({ email, userName, password })
         })
 
-        .then(response => {
-            setLoading(false);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            setLoading(false);
-            if (data.success) {
-                console.log('Sign-up successful:', data);
-                setShowSignUp(false);
-            } else {
-                setError(data.message || 'Sign-up failed. Please try again.');
-                console.error('Sign-up error:', data);
-            }
-        })
-        .catch(error => {
-            setLoading(false);
-            setError('Error during sign-up. Please try again.');
-            console.error('Error during sign-up:', error);
-        });
+            .then(response => {
+                setLoading(false);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setLoading(false);
+                if (data.success) {
+                    console.log('Sign-up successful:', data);
+                    setShowSignUp(false);
+                } else {
+                    setError(data.message || 'Sign-up failed. Please try again.');
+                    console.error('Sign-up error:', data);
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError('Error during sign-up. Please try again.');
+                console.error('Error during sign-up:', error);
+            });
     };
 
 
@@ -74,95 +75,126 @@ function LogIn() {
             },
             body: JSON.stringify({ email, password })
         })
-        .then(response => {
-            setLoading(false);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            setLoading(false);
-            if (data.success) {
-                console.log('Login successful:', data);
-                localStorage.setItem('token', data.token);
-                navigate('/messages');
-            } else {
-                setError(data.message || 'Login failed. Please try again.');
-                console.error('Login error:', data);
-            }
-        })
-        .catch(error => {
-            setLoading(false);
-            setError('Error during login. Please try again.');
-            console.error('Error during login:', error);
-        });
+            .then(response => {
+                setLoading(false);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setLoading(false);
+                if (data.success) {
+                    console.log('Login successful:', data);
+                    localStorage.setItem('token', data.token);
+                    navigate('/messages');
+                } else {
+                    setError(data.message || 'Login failed. Please try again.');
+                    console.error('Login error:', data);
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError('Error during login. Please try again.');
+                console.error('Error during login:', error);
+            });
     };
 
 
 
     return (
-        <div style={{ width:'100%',height:'100vh',display: 'flex', justifyContent: 'center', flexDirection: 'column',alignItems:'center' }}>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
-            {showSignUp ? (
-                <div style={{  width:'50%',height:'30%',display: 'flex', justifyContent: 'center', flexDirection: 'column',alignItems:'center' }}>
-                    <div>
-                        <label>Email</label>
-                        <input
-                            type="text"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>User Name</label>
-                        <input
-                            type="text"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button style={{ width:'30%',}} onClick={handleSignUp} disabled={loading}>
-                        {loading ? 'Signing Up...' : 'Sign Up'}
-                    </button>
-                    <a href="#" onClick={() => setShowSignUp(false)}>Log In</a>
-                </div>
-            ) : (
-                <div style={{ width:'50%',height:'30%',display: 'flex', justifyContent: 'center', flexDirection: 'column',alignItems:'center' }}>
-                    <div>
-                        <label>Email</label>
-                        <input
-                            type="text"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <button style={{ width:'30%',}} onClick={handleLogin} disabled={loading}>
-                        {loading ? 'Logging In...' : 'Log In'}
-                    </button>
-                    <a href="#" onClick={() => setShowSignUp(true)}>Sign Up</a>
-                </div>
-            )}
-        </div>
+        <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh', padding: '20px' }}>
+            <Grid item xs={12} sm={8} md={4} >
+                <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'column', padding: '20px' }}>
+                    {error && <div style={{ color: 'red' }}>{error}</div>}
+                    <Typography variant="h5" align="center">
+                        {showSignUp ? 'Sign Up' : 'Log In'}
+                    </Typography>
+                    <Grid container spacing={2}  sx={{ display: 'flex', flexDirection: 'column', marginTop: '10px'  }}>
+                        {showSignUp && (
+                            <>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        variant="outlined"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="User Name"
+                                        value={userName}
+                                        onChange={(e) => setUserName(e.target.value)}
+                                        required
+                                        variant="outlined"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        variant="outlined"
+                                    />
+                                </Grid>
+                            </>
+                        )}
+                        {!showSignUp && (
+                            <>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                </Grid>
+                            </>
+                        )}
+                        <Grid item xs={12}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={showSignUp ? handleSignUp : handleLogin}
+                                disabled={loading}
+                                fullWidth
+                            >
+                                {loading
+                                    ? (showSignUp ? 'Signing Up...' : 'Logging In...')
+                                    : (showSignUp ? 'Sign Up' : 'Log In')}
+                            </Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                color="secondary"
+                                onClick={() => setShowSignUp(!showSignUp)}
+                                fullWidth
+                            >
+                                {showSignUp ? 'Already have an account? Log In' : 'Need an account? Sign Up'}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Grid>
+        </Grid>
     );
 }
 
