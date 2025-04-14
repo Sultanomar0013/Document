@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import { Grid, TextField, Button, Typography, Paper } from '@mui/material';
 
 
 
-const socket = io('http://localhost:3000');
+
 
 function LogIn() {
     const [email, setEmail] = useState('');
@@ -16,7 +15,7 @@ function LogIn() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-
+    const backendUrl = import.meta.env.VITE_ADRESS;
 
 
 
@@ -24,7 +23,12 @@ function LogIn() {
         setLoading(true);
         setError('');
 
-        fetch('http://localhost:3000/api/signup', {
+        console.log('Sending signup data:', { userName, email, password });
+        if (!userName || !email || !password) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        fetch(`${backendUrl}user/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,19 +60,11 @@ function LogIn() {
             });
     };
 
-
-
-
-
-
-
-
-
     const handleLogin = () => {
         setLoading(true);
         setError('');
 
-        fetch('http://localhost:3000/api/login', {
+        fetch(`${backendUrl}user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -86,8 +82,9 @@ function LogIn() {
                 setLoading(false);
                 if (data.success) {
                     console.log('Login successful:', data);
+                    console.log('Token:', data.token);
                     localStorage.setItem('token', data.token);
-                    navigate('/messages');
+                    navigate('/home');
                 } else {
                     setError(data.message || 'Login failed. Please try again.');
                     console.error('Login error:', data);
@@ -110,7 +107,7 @@ function LogIn() {
                     <Typography variant="h5" align="center">
                         {showSignUp ? 'Sign Up' : 'Log In'}
                     </Typography>
-                    <Grid container spacing={2}  sx={{ display: 'flex', flexDirection: 'column', marginTop: '10px'  }}>
+                    <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column', marginTop: '10px' }}>
                         {showSignUp && (
                             <>
                                 <Grid item xs={12}>
