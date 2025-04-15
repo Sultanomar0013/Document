@@ -84,7 +84,7 @@ function LogIn() {
                     console.log('Login successful:', data);
                     console.log('Token:', data.token);
                     localStorage.setItem('token', data.token);
-                    navigate('/home');
+                    navigate('/docMod/home');
                 } else {
                     setError(data.message || 'Login failed. Please try again.');
                     console.error('Login error:', data);

@@ -67,26 +67,26 @@ import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 
 // User Module
 const userMenuItems = [
-  { segment: "dashboard", title: "Dashboard", icon: <DashboardIcon />, path: "/userMod/home/Dashboard" },
-  { segment: "user_access", title: "User Access", icon: <PeopleIcon />, path: "/userMod/home/UserAccess" },
+  { segment: "dashboard", title: "Dashboard", icon: <DashboardIcon />, path: "/docMod/home/Dashboard" },
+  { segment: "user_access", title: "User Access", icon: <PeopleIcon />, path: "/docMod/home/UserAccess" },
   {
     segment: "my_account",
     title: "My Account",
     icon: <AccountCircleIcon />,
     children: [
-      { segment: "profile", title: "My Profile", path: "/userMod/home/ProfilePanel", icon: <AccountCircleIcon /> },
-      { segment: "update_profile", title: "Update Profile", path: "/userMod/home/UpdateProfile", icon: <EditIcon /> },
+      { segment: "profile", title: "My Profile", path: "/docMod/home/ProfilePanel", icon: <AccountCircleIcon /> },
+      { segment: "update_profile", title: "Update Profile", path: "/docMod/home/UpdateProfile", icon: <EditIcon /> },
     ],
   },
-  { segment: "notice", title: "Notice", icon: <NotificationsIcon />, path: "/userMod/home/NoticeReport" },
-  { segment: "attendance", title: "Attendance", icon: <TodayIcon />, path: "/userMod/home/Attendance" },
+  { segment: "notice", title: "Notice", icon: <NotificationsIcon />, path: "/docMod/home/NoticeReport" },
+  { segment: "attendance", title: "Attendance", icon: <TodayIcon />, path: "/docMod/home/Attendance" },
   {
     segment: "document",
     title: "Document",
     icon: <DescriptionIcon />,
     children: [
-      { segment: "doc_type", title: "Document Type", path: "/userMod/home/DocType", icon: <ListAltIcon /> },
-      { segment: "doc_list", title: "Document List", path: "/userMod/home/DocAtt", icon: <ListAltIcon /> },
+      { segment: "doc_type", title: "Document Type", path: "/docMod/home/DocType", icon: <ListAltIcon /> },
+      { segment: "doc_list", title: "Document List", path: "/docMod/home/DocAtt", icon: <ListAltIcon /> },
     ],
   },
   {
@@ -94,8 +94,8 @@ const userMenuItems = [
     title: "Meeting Schedule",
     icon: <EventIcon />,
     children: [
-      { segment: "meet_location", title: "Meeting Location", path: "/userMod/home/MeetLocate", icon: <LocationOnIcon /> },
-      { segment: "meet_schedule", title: "Create Schedule", path: "/userMod/home/MeetSchedule", icon: <EventIcon /> },
+      { segment: "meet_location", title: "Meeting Location", path: "/docMod/home/MeetLocate", icon: <LocationOnIcon /> },
+      { segment: "meet_schedule", title: "Create Schedule", path: "/docMod/home/MeetSchedule", icon: <EventIcon /> },
     ],
   },
   {
@@ -103,11 +103,11 @@ const userMenuItems = [
     title: "IT Support",
     icon: <SupportAgentIcon />,
     children: [
-      { segment: "it_request", title: "IT Request Status", path: "/userMod/home/ItRequestStatus", icon: <AssignmentTurnedInIcon /> },
-      { segment: "it_list", title: "IT Support List", path: "/userMod/home/ItSupport", icon: <SupportAgentIcon /> },
+      { segment: "it_request", title: "IT Request Status", path: "/docMod/home/ItRequestStatus", icon: <AssignmentTurnedInIcon /> },
+      { segment: "it_list", title: "IT Support List", path: "/docMod/home/ItSupport", icon: <SupportAgentIcon /> },
     ],
   },
-  { segment: "hr_support", title: "HR & Admin Support", icon: <WorkIcon />, path: "/userMod/home/HrRequest" },
+  { segment: "hr_support", title: "HR & Admin Support", icon: <WorkIcon />, path: "/docMod/home/HrRequest" },
 ];
 
 
@@ -273,7 +273,7 @@ const hrMenuItems = [
 // Function to get filtered menu items based on location
 export const getMenuItems = (pathname) => {
 
-  if (pathname.startsWith("/userMod")) {
+  if (pathname.startsWith("/docMod")) {
     return userMenuItems;
   } else if (pathname.startsWith("/itMod")) {
     return itMenuItems;

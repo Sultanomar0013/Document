@@ -13,7 +13,7 @@ import SideBar from "../common/sideBar";
 import { useTheme } from "@mui/material/styles";
 
 //component Layout
-// import Dashboard from "../components/dashboard/dashboard4";
+import Dashboard from "../components/dashboard/dashboard";
 // import ProfilePanel from "../components/profileComponent/myProfile"
 // import MemberReport from "../components/member_basic/memberReport.jsx"
 // import NoticeReport from "../components/notice/notice.jsx"
