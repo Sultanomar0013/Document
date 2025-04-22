@@ -13,18 +13,9 @@ import SideBar from "../common/sideBar";
 import { useTheme } from "@mui/material/styles";
 
 //component Layout
-import Dashboard from "../components/dashboard/dashboard";
-// import ProfilePanel from "../components/profileComponent/myProfile"
-// import MemberReport from "../components/member_basic/memberReport.jsx"
-// import NoticeReport from "../components/notice/notice.jsx"
-// import AttendanceComponent from '../components/attendance/attendance.jsx';
-// import DocAtt from '../components/docAttacment/docAtt.jsx';
-// import DocType from '../components/docAttacment/docType.jsx';
-// import MeetLocate from '../components/meeting/meetLocation.jsx';
-// import MeetSchedule from '../components/meeting/meetingSchedule.jsx';
-// import ItSupport from '../components/itSupport/itSupport.jsx';
-// import ItRequestStatus from '../components/itSupport/itRequeststatus.jsx';
-// import HrRequest from '../components/hrRequest/hrRequestList.jsx';
+import Dashboard from "../components/dashboard/dashboard1";
+import AddCategory from "../components/categoryAdd/add_category";
+
 
 
 
@@ -103,18 +94,8 @@ const MainHome = () => {
                                 }}>
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
-                            {/* <Route path="dashboard" element={<Dashboard />} />
-                            <Route path="ProfilePanel" element={<ProfilePanel />} />
-                            <Route path="MemberReport" element={<MemberReport />} />
-                            <Route path="NoticeReport" element={<NoticeReport />} />
-                            <Route path="Attendance" element={<AttendanceComponent />} />
-                            <Route path="DocAtt" element={<DocAtt />} />
-                            <Route path="DocType" element={<DocType />} />
-                            <Route path="MeetLocate" element={<MeetLocate />} />
-                            <Route path="MeetSchedule" element={<MeetSchedule />} />
-                            <Route path="ItRequestStatus" element={<ItRequestStatus />} />
-                            <Route path="ItSupport" element={<ItSupport />} />
-                            <Route path="HrRequest" element={<HrRequest />} /> */}
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/category" element={<AddCategory />} />
                         </Routes>
                     </Box>
                 </Box>

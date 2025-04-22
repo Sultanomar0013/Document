@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, TextField, Button, Typography, Paper } from '@mui/material';
-import axios from 'axios';
+
+
+
+
 
 function LogIn() {
     const [email, setEmail] = useState('');
@@ -14,71 +17,93 @@ function LogIn() {
 
     const backendUrl = import.meta.env.VITE_ADRESS;
 
-    const handleSignUp = async () => {
+
+
+    const handleSignUp = () => {
         setLoading(true);
         setError('');
 
+        console.log('Sending signup data:', { userName, email, password });
         if (!userName || !email || !password) {
-            setError('All fields are required');
-            setLoading(false);
-            return;
+            return res.status(400).json({ error: 'All fields are required' });
         }
 
-        try {
-            const response = await axios.post(`${backendUrl}user/signup`, {
-                email,
-                userName,
-                password,
+        fetch(`${backendUrl}user/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, userName, password })
+        })
+
+            .then(response => {
+                setLoading(false);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setLoading(false);
+                if (data.success) {
+                    console.log('Sign-up successful:', data);
+                    setShowSignUp(false);
+                } else {
+                    setError(data.message || 'Sign-up failed. Please try again.');
+                    console.error('Sign-up error:', data);
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError('Error during sign-up. Please try again.');
+                console.error('Error during sign-up:', error);
             });
-
-            const data = response.data;
-
-            if (data.success) {
-                console.log('Sign-up successful:', data);
-                setShowSignUp(false);
-            } else {
-                setError(data.message || 'Sign-up failed. Please try again.');
-            }
-        } catch (err) {
-            console.error('Sign-up error:', err);
-            setError('Error during sign-up. Please try again.');
-        } finally {
-            setLoading(false);
-        }
     };
 
-    const handleLogin = async () => {
+    const handleLogin = () => {
         setLoading(true);
         setError('');
 
-        try {
-            const response = await axios.post(`${backendUrl}user/login`, {
-                email,
-                password,
+        fetch(`${backendUrl}user/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then(response => {
+                setLoading(false);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setLoading(false);
+                if (data.success) {
+                    console.log('Login successful:', data);
+                    console.log('Token:', data.token);
+                    localStorage.setItem('token', data.token);
+                    navigate('/docMod/home');
+                } else {
+                    setError(data.message || 'Login failed. Please try again.');
+                    console.error('Login error:', data);
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError('Error during login. Please try again.');
+                console.error('Error during login:', error);
             });
-
-            const data = response.data;
-
-            if (data.success) {
-                console.log('Login successful:', data);
-                localStorage.setItem('token', data.token);
-                navigate('/docMod/home');
-            } else {
-                setError(data.message || 'Login failed. Please try again.');
-            }
-        } catch (err) {
-            console.error('Login error:', err);
-            setError('Error during login. Please try again.');
-        } finally {
-            setLoading(false);
-        }
     };
+
+
 
     return (
         <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh', padding: '20px' }}>
-            <Grid item xs={12} sm={8} md={4}>
+            <Grid item xs={12} sm={8} md={4} >
                 <Paper elevation={3} sx={{ display: 'flex', flexDirection: 'column', padding: '20px' }}>
-                    {error && <Typography color="error">{error}</Typography>}
+                    {error && <div style={{ color: 'red' }}>{error}</div>}
                     <Typography variant="h5" align="center">
                         {showSignUp ? 'Sign Up' : 'Log In'}
                     </Typography>
