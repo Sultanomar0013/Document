@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AuthMiddleware = require('../middleware/AuthMiddleware');
+const AuthController = require('../controllers/authController');
 
 
 router.get('/', (req, res) => {
@@ -8,12 +8,12 @@ router.get('/', (req, res) => {
 });
 
 // Signup Route
-router.post('/signup', AuthMiddleware.signup, (req, res) => {
+router.post('/signup', AuthController.signup, (req, res) => {
     res.json({ success: true, message: 'Sign-in successful' });
 });
 
 // Login Route
-router.post('/login', AuthMiddleware.login, (req, res) => {
+router.post('/login', AuthController.login, (req, res) => {
   res.json({
     success: true,
     message: 'Login successful',
@@ -22,11 +22,11 @@ router.post('/login', AuthMiddleware.login, (req, res) => {
   });
 });
 
-router.post('/auth', AuthMiddleware.verifyToken, (req, res) => {
+router.post('/auth', AuthController.verifyToken, (req, res) => {
   res.json({ success: true, message: 'Token is valid' });
 });
 // Logout Route
-router.post('/logout', AuthMiddleware.logout, (req, res) => {
+router.post('/logout', AuthController.logout, (req, res) => {
   res.json({ success: true, message: 'Logout successful' });
 });
 

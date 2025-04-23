@@ -5,6 +5,8 @@ import {
 } from "@mui/material";
 import axios from 'axios';
 
+
+
 function AddCategory() {
   const [rows, setRows] = useState([]);
   const [loadingFetch, setLoadingFetch] = useState(false);
@@ -12,6 +14,7 @@ function AddCategory() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const backendUrl = import.meta.env.VITE_ADRESS;
 
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => {
@@ -23,7 +26,11 @@ function AddCategory() {
   const fetchCategories = async () => {
     setLoadingFetch(true);
     try {
-      const res = await axios.get('http://localhost:5001/categories');
+      const res = await axios.get(`${backendUrl}category`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       setRows(res.data);
       setErrorFetch(null);
     } catch (err) {
@@ -40,7 +47,11 @@ function AddCategory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/categories', selectedRow);
+      await axios.post(`${backendUrl}category`, selectedRow, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       fetchCategories();
       handleClose();
     } catch (err) {
@@ -51,7 +62,11 @@ function AddCategory() {
   const updateModelSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5001/categories/${selectedRow.id}`, selectedRow);
+      await axios.put(`${backendUrl}category/${selectedRow.id}`, selectedRow, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       fetchCategories();
       handleClose();
     } catch (err) {
@@ -104,11 +119,12 @@ function AddCategory() {
         <Modal open={openModal} onClose={handleClose}>
           <Box sx={style}>
             <form onSubmit={isEditing ? updateModelSubmit : handleSubmit}>
-              <Typography variant="h6" gutterBottom>
-                {isEditing ? 'Edit Category' : 'Add Category'}
+              <Typography variant="h6" sx={{ p: 1 }} gutterBottom>
+                    {isEditing ? 'Edit Category' : 'Add Category'}
               </Typography>
-              <Grid container>
-                <Grid item xs={12} sx={{ p: 1 }}>
+              <Grid container spacing={2}>
+                <Grid item  sx={{ p: 1, width: '100%' }}>
+
                   <TextField
                     fullWidth
                     label="Category Name"
@@ -117,7 +133,7 @@ function AddCategory() {
                     required
                   />
                 </Grid>
-                <Grid item xs={12} sx={{ p: 1 }}>
+                <Grid item xs={12} sx={{ p: 1, width: '100%'  }}>
                   <TextField
                     fullWidth
                     label="Category Details"

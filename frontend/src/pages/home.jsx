@@ -15,7 +15,7 @@ import { useTheme } from "@mui/material/styles";
 //component Layout
 import Dashboard from "../components/dashboard/dashboard1";
 import AddCategory from "../components/categoryAdd/add_category";
-
+import FileUploadForm from "../components/uploadDocument/docUpload";
 
 
 
@@ -78,7 +78,6 @@ const MainHome = () => {
                 <Box
                     component="main"
                     sx={{
-                        display: 'flex',
                         justifyContent: 'center',
                         width: '100%',
                         p: 3,
@@ -88,14 +87,14 @@ const MainHome = () => {
                     }}
                 >
                     <Box sx={{  maxWidth: '1440px',
-                                display: 'flex',
-
                                 flexGrow: 1,
                                 }}>
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/category" element={<AddCategory />} />
+                            <Route path="/uploadDocument" element={<FileUploadForm />} />
+                            {/* Add more routes as needed */}
                         </Routes>
                     </Box>
                 </Box>

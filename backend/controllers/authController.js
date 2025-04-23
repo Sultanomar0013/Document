@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 
 const jwtSecret = process.env.JWT_SECRET;
 
-class AuthMiddleware {
+class AuthController {
   // Signup Middleware
   static async signup(req, res, next) {
     const { email, userName, password } = req.body;
@@ -66,7 +66,7 @@ class AuthMiddleware {
           console.error('Error comparing passwords:', err);
           return res.status(500).json({ success: false, message: 'Login failed' });
         }
-
+ 
         if (!isMatch) {
           return res.status(400).json({ success: false, message: 'Incorrect email or password' });
         }
@@ -163,4 +163,4 @@ class AuthMiddleware {
   }
 }
 
-module.exports = AuthMiddleware;
+module.exports = AuthController;

@@ -21,6 +21,18 @@ const defaultTheme = createTheme({
       third: "#000",
     },
   },
+  components: {
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: 'green', // default label color
+        },
+        shrink: {
+          color: 'green', // label color when shrunk (e.g. for date fields)
+        },
+      },
+    },
+  },
 });
 
 const darkTheme = createTheme({
@@ -61,6 +73,18 @@ const greenTheme = createTheme({
       primary: "#000", // Define primary text color
       secondary: "#FFFFFF", // Define secondary text color
       third: "#000",
+    },
+  },
+  components: {
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: 'black', // default label color
+        },
+        shrink: {
+          color: 'green', // label color when shrunk (e.g. for date fields)
+        },
+      },
     },
   },
 });

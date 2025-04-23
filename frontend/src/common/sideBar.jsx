@@ -13,7 +13,7 @@ const drawerWidth = 240;
 
 const SideBar = ({ open, toggleSidebar }) => {
 
-  const location = useLocation();
+  const location = useLocation(); 
   const theme = useTheme();
   const [openMenus, setOpenMenus] = useState({});
 
@@ -97,7 +97,7 @@ const SideBar = ({ open, toggleSidebar }) => {
               // Parent menu item with children
               <>
                 <ListItem onClick={() => handleToggle(segment)}   sx={{
-                          
+
                           backgroundColor: "inherit",
                             "&:hover": {
                               backgroundColor: theme.palette.secondary.main

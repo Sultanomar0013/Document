@@ -8,6 +8,8 @@ const dotenv = require('dotenv');
 // const sginupMiddleware = require('./middleware/AuthMiddleware.js');
 // const loginMiddleware = require('./middleware/AuthMiddleware.js');
 const userRoutes = require('./routes/user');
+const categoryRouter = require('./routes/categoryRoutes');
+const documentRoutes = require('./routes/documentRoutes');
 
 app.use(express.json());
 
@@ -16,7 +18,7 @@ dotenv.config();
 
 app.use(cors({
   origin: "http://localhost:5173",
-  methods: ["GET", "POST"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.options('*', cors());
@@ -26,6 +28,9 @@ dotenv.config();
 const server = http.createServer(app);
 
 app.use('/user', userRoutes);
+app.use('/category', categoryRouter);
+app.use('/uploads', express.static('uploads'));
+app.use('/upload', documentRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, world! Your server is working!');
