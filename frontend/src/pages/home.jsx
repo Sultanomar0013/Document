@@ -2,7 +2,8 @@
 import { Routes, Route } from "react-router-dom";
 import { Box, CssBaseline, useMediaQuery } from "@mui/material";
 import { useState, useEffect } from "react";
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 //for theme
 import { ThemeProvider } from "@mui/material";
 import getTheme from '../common/theme/theme.jsx';
@@ -22,22 +23,23 @@ import FileUploadForm from "../components/uploadDocument/docUpload";
 const MainHome = () => {
 
     const theme = useTheme();
-
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+    const backendUrl = import.meta.env.VITE_ADRESS;
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         if (isSmallScreen == true) {
             setSidebarOpen(false);
-        }else {
+        } else {
             setSidebarOpen(true);
         }
     }, [isSmallScreen])
 
 
-
-    const [customTheme, setCustomTheme] = useState(localStorage.getItem("customtheme") ? localStorage.getItem("customtheme")  : "light");
+    const [customTheme, setCustomTheme] = useState(localStorage.getItem("customtheme") ? localStorage.getItem("customtheme") : "light");
 
     const toggleTheme = (newTheme) => {
         setCustomTheme(newTheme);
@@ -86,9 +88,10 @@ const MainHome = () => {
                         overflow: 'scroll',
                     }}
                 >
-                    <Box sx={{  maxWidth: '1440px',
-                                flexGrow: 1,
-                                }}>
+                    <Box sx={{
+                        maxWidth: '1440px',
+                        flexGrow: 1,
+                    }}>
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/dashboard" element={<Dashboard />} />

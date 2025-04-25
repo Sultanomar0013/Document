@@ -5,7 +5,14 @@ class DocumentController {
   static uploadDocument(req, res) {
     const { fileName, details, categoryId } = req.body;
     const entry_by = req.user.id;
-
+    console.log('User ID:', entry_by);
+    console.log('File Name:', fileName);
+    console.log('Details:', details);
+    console.log('Category ID:', categoryId);
+    console.log('File:', req.file);
+    console.log('File Path:', req.file.path);
+    console.log('File Name:', req.file.filename);
+    console.log('File Size:', req.file.size);
     if (!fileName || !categoryId || !req.file) {
       return res.status(400).json({ message: 'Missing required fields' });
     }

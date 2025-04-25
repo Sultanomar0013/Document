@@ -10,16 +10,20 @@ const dotenv = require('dotenv');
 const userRoutes = require('./routes/user');
 const categoryRouter = require('./routes/categoryRoutes');
 const documentRoutes = require('./routes/documentRoutes');
+const cookieParser = require('cookie-parser');
+
+
 
 app.use(express.json());
-
+app.use(cookieParser());
 dotenv.config();
 
 
 app.use(cors({
   origin: "http://localhost:5173",
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
 app.options('*', cors());
 
@@ -29,8 +33,8 @@ const server = http.createServer(app);
 
 app.use('/user', userRoutes);
 app.use('/category', categoryRouter);
-app.use('/uploads', express.static('uploads'));
-app.use('/upload', documentRoutes);
+app.use('/uploadDoc', express.static('uploads'));
+app.use('/uploadDoc', documentRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, world! Your server is working!');

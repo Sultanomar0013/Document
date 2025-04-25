@@ -47,6 +47,33 @@ function LogIn() {
         }
     };
 
+    // const handleLogin = async () => {
+    //     setLoading(true);
+    //     setError('');
+
+    //     try {
+    //         const response = await axios.post(`${backendUrl}user/login`, {
+    //             email,
+    //             password,
+    //         });
+
+    //         const data = response.data;
+
+    //         if (data.success) {
+    //             console.log('Login successful:', data);
+    //             localStorage.setItem('token', data.token);
+    //             navigate('/docMod/home');
+    //         } else {
+    //             setError(data.message || 'Login failed. Please try again.');
+    //         }
+    //     } catch (err) {
+    //         console.error('Login error:', err);
+    //         setError('Error during login. Please try again.');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
     const handleLogin = async () => {
         setLoading(true);
         setError('');
@@ -55,13 +82,14 @@ function LogIn() {
             const response = await axios.post(`${backendUrl}user/login`, {
                 email,
                 password,
+            }, {
+                withCredentials: true
             });
 
             const data = response.data;
 
             if (data.success) {
                 console.log('Login successful:', data);
-                localStorage.setItem('token', data.token);
                 navigate('/docMod/home');
             } else {
                 setError(data.message || 'Login failed. Please try again.');

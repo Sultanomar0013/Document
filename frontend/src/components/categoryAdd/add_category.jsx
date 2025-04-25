@@ -27,9 +27,7 @@ function AddCategory() {
     setLoadingFetch(true);
     try {
       const res = await axios.get(`${backendUrl}category`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        withCredentials: true, // this tells the browser to send cookies
       });
       setRows(res.data);
       setErrorFetch(null);
@@ -48,9 +46,7 @@ function AddCategory() {
     e.preventDefault();
     try {
       await axios.post(`${backendUrl}category`, selectedRow, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        withCredentials: true, // this tells the browser to send cookies
       });
       fetchCategories();
       handleClose();
@@ -58,6 +54,7 @@ function AddCategory() {
       console.error('Error adding category:', err);
     }
   };
+
 
   const updateModelSubmit = async (e) => {
     e.preventDefault();

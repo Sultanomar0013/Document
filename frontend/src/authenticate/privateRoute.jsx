@@ -7,7 +7,7 @@ function PrivateRoute({ children }) {
 
   if (!token) {
     return <Navigate to="/" />;
-  }
+  } 
 
   return <Authenticate>{children}</Authenticate>;
 }

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -6,10 +7,19 @@ const DocumentController = require('../controllers/documentController');
 
 const router = express.Router();
 
-// Multer config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    const userId = req.user.id;
+    const userFolder = path.join(__dirname, '..', 'uploads', String(userId));
+
+    // Create folder if it doesn't exist
+    fs.mkdir(userFolder, { recursive: true }, (err) => {
+      if (err) {
+        console.error('Error creating folder:', err);
+        return cb(err, userFolder);
+      }
+      cb(null, userFolder);
+    });
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
@@ -20,6 +30,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // POST /upload
-router.post('/', authenticateToken, upload.single('file'), DocumentController.uploadDocument);
+router.post('/', authenticateToken.authToken, upload.single('file'), DocumentController.uploadDocument);
 
 module.exports = router;

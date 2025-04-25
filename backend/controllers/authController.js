@@ -66,7 +66,7 @@ class AuthController {
           console.error('Error comparing passwords:', err);
           return res.status(500).json({ success: false, message: 'Login failed' });
         }
- 
+
         if (!isMatch) {
           return res.status(400).json({ success: false, message: 'Incorrect email or password' });
         }
@@ -75,13 +75,21 @@ class AuthController {
 
         // const user = req.user
         console.log('Request body:', req.user);
-        const token = jwt.sign({ id: user.id, email: user.email },
+        const token = jwt.sign({ id: user.id, email: user.email, password: user.password },
           jwtSecret,
           { expiresIn: '7h' })
 
-          req.token = token;
-        //console.log('Generated JWT:', token);
-        next();
+          res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 7 * 60 * 60 * 1000,
+          });
+
+          return res.json({
+            success: true,
+            message: 'Logged in successfully',
+          });
       });
     });
 

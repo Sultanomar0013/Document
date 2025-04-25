@@ -28,9 +28,7 @@ const FileUploadForm = () => {
     const fetchCategories = async () => {
       try {
         const res = await axios.get(`${backendUrl}category`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
+          withCredentials: true,
         });
         setCategories(res.data); // Assuming your backend sends an array of { id, name }
       } catch (err) {
@@ -63,9 +61,9 @@ console.log('hello:', categories);
     try {
       setUploading(true);
       const res = await axios.post(`${backendUrl}uploadDoc`, formData, {
+        withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       setMessage(res.data.message || 'File uploaded successfully!');

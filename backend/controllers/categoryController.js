@@ -24,7 +24,7 @@ class CategoryController {
     if (!categoryName || !entry_by) {
       return res.status(400).json({ success: false, message: 'Category name and user required' });
     }
-
+ 
     const query = 'INSERT INTO category (categoryName, categoryDetails, entry_by) VALUES (?, ?, ?)';
     db.query(query, [categoryName, categoryDetails, entry_by], (err, result) => {
       if (err) {

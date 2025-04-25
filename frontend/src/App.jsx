@@ -12,11 +12,7 @@ function App() {
 
                 <Routes>
                     <Route path="/" element={<LogIn />} />
-                    <Route path="/docMod/home/*" element={
-                        <PrivateRoute>
-                            <Home />
-                        </PrivateRoute>
-                        } />
+                    <Route path="/docMod/home/*" element={ <Home /> } />
                 </Routes>
 
         </Router>
