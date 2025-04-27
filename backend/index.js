@@ -33,8 +33,8 @@ const server = http.createServer(app);
 
 app.use('/user', userRoutes);
 app.use('/category', categoryRouter);
-app.use('/uploadDoc', express.static('uploads'));
-app.use('/uploadDoc', documentRoutes);
+app.use('/document', express.static('uploads'));
+app.use('/document', documentRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, world! Your server is working!');

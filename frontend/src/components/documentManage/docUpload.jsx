@@ -36,7 +36,6 @@ const FileUploadForm = () => {
         setMessage('Failed to load categories, please try again later.');
       }
     };
-console.log('hello:', categories);
 
     fetchCategories();
   }, []);
@@ -60,7 +59,7 @@ console.log('hello:', categories);
 
     try {
       setUploading(true);
-      const res = await axios.post(`${backendUrl}uploadDoc`, formData, {
+      const res = await axios.post(`${backendUrl}document/uploadDoc`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -123,7 +122,7 @@ console.log('hello:', categories);
         >
           {categories.map((cat) => (
             <MenuItem key={cat.id} value={cat.id}>
-              {cat.categoryName}
+              {cat.category_name}
             </MenuItem>
           ))}
         </Select>

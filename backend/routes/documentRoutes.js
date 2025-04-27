@@ -30,6 +30,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // POST /upload
-router.post('/', authenticateToken.authToken, upload.single('file'), DocumentController.uploadDocument);
+router.post('/uploadDoc', authenticateToken.authToken, upload.single('file'), DocumentController.uploadDocument);
+// GET /showDoc
+router.get('/showDoc', authenticateToken.authToken, DocumentController.showDocument);
+// GET /download/:fileName
+router.get('/download/:fileName', authenticateToken.authToken, (req, res) => {
+  const fileName = req.params.fileName;
+  const userId = req.user.id;
+  const filePath = path.join(__dirname, '..', 'uploads', String(userId), fileName);
+
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error('Download error:', err);
+      res.status(500).send('Error downloading the file');
+    }
+  });
+});
+// DELETE /delete/:id
+router.delete('/delete/:id', authenticateToken.authToken, DocumentController.deleteDocument);
 
 module.exports = router;

@@ -16,37 +16,37 @@ class CategoryController {
 
   // POST create category
   static async create(req, res) {
-    const { categoryName, categoryDetails } = req.body;
+    const { category_name, category_details } = req.body;
     const entry_by = req.user?.id;
-    console.log('Request body:', req.body);
+    console.log('Request body:', req.body); 
     console.log('User ID:', entry_by);
 
-    if (!categoryName || !entry_by) {
+    if (!category_name || !entry_by) {
       return res.status(400).json({ success: false, message: 'Category name and user required' });
     }
- 
-    const query = 'INSERT INTO category (categoryName, categoryDetails, entry_by) VALUES (?, ?, ?)';
-    db.query(query, [categoryName, categoryDetails, entry_by], (err, result) => {
+
+    const query = 'INSERT INTO category (category_name, category_details, entry_by) VALUES (?, ?, ?)';
+    db.query(query, [category_name, category_details, entry_by], (err, result) => {
       if (err) {
         console.error('Error inserting category:', err);
         return res.status(500).json({ success: false, message: 'Failed to add category' });
       }
-      res.status(201).json({ id: result.insertId, categoryName, categoryDetails, entry_by });
+      res.status(201).json({ id: result.insertId, category_name, category_details, entry_by });
     });
   }
 
   // PUT update category
   static async update(req, res) {
     const { id } = req.params;
-    const { categoryName, categoryDetails } = req.body;
+    const { category_name, category_details } = req.body;
     const entry_by = req.user?.id;
 
-    if (!categoryName || !entry_by) {
+    if (!category_name || !entry_by) {
       return res.status(400).json({ success: false, message: 'Category name and user required' });
     }
 
-    const query = 'UPDATE category SET categoryName = ?, categoryDetails = ?, entry_by = ? WHERE id = ?';
-    db.query(query, [categoryName, categoryDetails, entry_by, id], (err, result) => {
+    const query = 'UPDATE category SET category_name = ?, category_details = ?, entry_by = ? WHERE id = ?';
+    db.query(query, [category_name, category_details, entry_by, id], (err, result) => {
       if (err) {
         console.error('Error updating category:', err);
         return res.status(500).json({ success: false, message: 'Failed to update category' });

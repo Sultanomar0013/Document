@@ -16,8 +16,8 @@ import { useTheme } from "@mui/material/styles";
 //component Layout
 import Dashboard from "../components/dashboard/dashboard1";
 import AddCategory from "../components/categoryAdd/add_category";
-import FileUploadForm from "../components/uploadDocument/docUpload";
-
+import FileUploadForm from "../components/documentManage/docUpload.jsx";
+import ShowAttachments from "../components/documentManage/showDocument.jsx";
 
 
 const MainHome = () => {
@@ -97,6 +97,7 @@ const MainHome = () => {
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/category" element={<AddCategory />} />
                             <Route path="/uploadDocument" element={<FileUploadForm />} />
+                            <Route path="/showDocument" element={<ShowAttachments />} />
                             {/* Add more routes as needed */}
                         </Routes>
                     </Box>

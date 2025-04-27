@@ -91,8 +91,8 @@ function AddCategory() {
 
   const columns = [
     { field: 'id', headerName: 'Id', width: 150 },
-    { field: 'categoryName', headerName: 'Category Name', width: 300 },
-    { field: 'categoryDetails', headerName: 'Category Details', width: 400 },
+    { field: 'category_name', headerName: 'Category Name', width: 300 },
+    { field: 'category_details', headerName: 'Category Details', width: 400 },
     {
       field: 'action',
       headerName: 'Action',
@@ -111,7 +111,7 @@ function AddCategory() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h6">Category List</Typography>
-        <Button variant="contained" onClick={() => { setSelectedRow({ categoryName: '', categoryDetails: '' }); handleOpen(); }}>Add Category</Button>
+        <Button variant="contained" onClick={() => { setSelectedRow({ category_name: '', category_details: '' }); handleOpen(); }}>Add Category</Button>
 
         <Modal open={openModal} onClose={handleClose}>
           <Box sx={style}>
@@ -125,8 +125,8 @@ function AddCategory() {
                   <TextField
                     fullWidth
                     label="Category Name"
-                    value={selectedRow?.categoryName || ''}
-                    onChange={(e) => setSelectedRow({ ...selectedRow, categoryName: e.target.value })}
+                    value={selectedRow?.category_name || ''}
+                    onChange={(e) => setSelectedRow({ ...selectedRow, category_name: e.target.value })}
                     required
                   />
                 </Grid>
@@ -134,8 +134,8 @@ function AddCategory() {
                   <TextField
                     fullWidth
                     label="Category Details"
-                    value={selectedRow?.categoryDetails || ''}
-                    onChange={(e) => setSelectedRow({ ...selectedRow, categoryDetails: e.target.value })}
+                    value={selectedRow?.category_details || ''}
+                    onChange={(e) => setSelectedRow({ ...selectedRow, category_details: e.target.value })}
                     multiline
                     rows={4}
                     required

@@ -37,7 +37,7 @@ const docMenuItems = [
     title: "My Document",
     icon: <FolderIcon />,
     children: [
-      { segment: "all_document", title: "All Document", icon: <DescriptionIcon />, path: "/docMod/home/allDocument"},
+      { segment: "all_document", title: "All Document", icon: <DescriptionIcon />, path: "/docMod/home/showDocument"},
       { segment: "upload_document", title: "Upload Document", icon: <UploadFileIcon />, path: "/docMod/home/uploadDocument" },
     ],
   },
@@ -77,4 +77,4 @@ const MyComponent = () => {
   return null; // No UI is returned as per your request
 };
 
-export default MyComponent; 
+export default MyComponent;
