@@ -1,18 +1,12 @@
 const db = require('../model/db');
 const path = require('path');
+const fs = require('fs');
 
 class DocumentController {
   static uploadDocument(req, res) {
     const { fileName, details, categoryId } = req.body;
     const entry_by = req.user.id;
-    console.log('User ID:', entry_by);
-    console.log('File Name:', fileName);
-    console.log('Details:', details);
-    console.log('Category ID:', categoryId);
-    console.log('File:', req.file);
-    console.log('File Path:', req.file.path);
-    console.log('File Name:', req.file.filename);
-    console.log('File Size:', req.file.size);
+
     if (!fileName || !categoryId || !req.file) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
@@ -44,19 +38,34 @@ class DocumentController {
       JOIN category c ON d.category_id = c.id
     `;
 
+
     db.query(query, (err, results) => {
       if (err) {
         console.error('DB Error:', err);
         return res.status(500).json({ message: 'Failed to fetch documents' });
       }
 
+      const fileSize = results.map((doc) => {
+        const fullPath = path.join(__dirname, '../uploads', userId.toString(), doc.file_path);
+        let size = 0;
+        if (fs.existsSync(fullPath)) {
+          size = fs.statSync(fullPath).size;
+        }
+        return { id: doc.id, size };
+      });
+
+
       const attachments = results.map((doc) => ({
         id: doc.id,
         fileName: doc.file_name,
         details: doc.details,
-        url: path.join(__dirname, '../uploads', String(userId), doc.file_path),
+        filePath: doc.file_path,
+        url: `${req.protocol}://${req.get('host')}/document/${userId}/${doc.file_path}`,
+        originalName: doc.file_name,
         categoryName: doc.category_name,
-      }));
+        size: fileSize.find((file) => file.id === doc.id)?.size || 0,
+      }
+    ));
       console.log('Attachments:', attachments);
       return res.status(200).json({ attachments });
     });
