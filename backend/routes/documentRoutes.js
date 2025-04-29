@@ -4,7 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const authenticateToken = require('../middleware/authMiddleware');
 const DocumentController = require('../controllers/documentController');
-
+const DocumentAuthToken = require('../middleware/docAuthfilter');
+ 
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // POST /upload
-router.post('/uploadDoc', authenticateToken.authToken, upload.single('file'), DocumentController.uploadDocument);
+router.post('/uploadDoc', authenticateToken.authToken,DocumentAuthToken.docFileSizeChecker , upload.single('file'), DocumentController.uploadDocument);
 // GET /showDoc
 router.get('/showDoc', authenticateToken.authToken, DocumentController.showDocument);
 // GET /download/:fileName
