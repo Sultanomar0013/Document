@@ -4,7 +4,7 @@ const secret = process.env.JWT_SECRET;
 
 
 
-class documentAuthToken {
+class DocumentAuthToken {
 
   
   static docReqFileSize(req, res, next) {
@@ -48,6 +48,6 @@ class documentAuthToken {
   }
 }
 
-module.exports = documentAuthToken;
+module.exports = DocumentAuthToken;
 
 
