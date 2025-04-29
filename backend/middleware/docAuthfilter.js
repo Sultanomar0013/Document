@@ -6,7 +6,7 @@ const secret = process.env.JWT_SECRET;
 
 class DocumentAuthToken {
 
-  
+
   static docReqFileSize(req, res, next) {
   const file = req.file;
 
@@ -39,15 +39,22 @@ class DocumentAuthToken {
     files.forEach((file) => {
       const filePath = path.join(folderPath, file);
       const stat = fs.statSync(filePath);
-  
+
       if (stat.isFile()) {
         totalSize += stat.size; // Add file size
       }
       EstimatedSize = totalSize + fileSizeInBytes;
     });
+
+    const maxSize = 100 * 1024 * 1024; // 10 MB
+    if (EstimatedSize > maxSize) {
+      return res.status(400).json({
+        message: 'File size exceeds the limit',
+        maxSize: formatSize(maxSize),
+        currentSize: formatSize(EstimatedSize),
+      });
+    }
   }
 }
 
 module.exports = DocumentAuthToken;
-
-
