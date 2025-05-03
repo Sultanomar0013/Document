@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardActions, Button, Typography, Box } from "@mui/material";
+import { Card, CardContent, CardActions, Button, Typography, Box, Collapse, TextField } from "@mui/material";
 import axios from "axios";
 
 const ShowAttachments = () => {
   const backendUrl = import.meta.env.VITE_ADRESS;
   const [attachments, setAttachments] = useState([]);
+  const [showFields, setShowFields] = useState(false);
+  const [email, setEmail] = useState("");
+  const [type, setType] = useState("");
+  const [fileId, setFileId] = useState("");
+
 
   useEffect(() => {
     fetchAttachments();
@@ -76,7 +81,39 @@ const ShowAttachments = () => {
           >
             Download
           </Button>
+
+        <Button
+        variant="outlined"
+        size="small"
+        onClick={() => setShowFields(!showFields)}
+        onChange={(e) => setFileId(file.id)}
+        >
+        Share
+      </Button>
         </CardActions>
+
+         {/* Shareing option */}
+         <Collapse in={showFields} timeout="auto" unmountOnExit>
+        <Box mt={2} display="flex" flexDirection="column" gap={1}>
+          <TextField
+            label="Email"
+            variant="outlined"
+            size="small"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            label="Type"
+            variant="outlined"
+            size="small"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          />
+          <Button variant="contained" size="small" onClick={handleUpdate}>
+            Update
+          </Button>
+        </Box>
+      </Collapse>
 
         {/* File Size at Bottom-Right */}
         <Typography
