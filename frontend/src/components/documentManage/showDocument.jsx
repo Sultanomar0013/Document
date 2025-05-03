@@ -9,6 +9,8 @@ const ShowAttachments = () => {
   const [email, setEmail] = useState("");
   const [type, setType] = useState("");
   const [fileId, setFileId] = useState("");
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -40,6 +42,39 @@ const ShowAttachments = () => {
   const openInNewTab = (url) => {
     window.open(url, "_blank");
   };
+  
+   const handleUpdate = () => {
+    setLoading(true);
+        setError('');
+
+        if (!fileId || !type) {
+            setError('All fields are required');
+            setLoading(false);
+            return;
+        }
+     try {
+            const response = await axios.post(`${backendUrl}user/signup`, {
+                fileId,
+                type,
+                password,
+            });
+
+            const data = response.data;
+
+            if (data.success) {
+                console.log('Share successful:', data);
+                setLoading(false);
+            } else {
+                setError(data.message || 'Share failed. Please try again.');
+            }
+        } catch (err) {
+            console.error('Share error:', err);
+            setError('Error during Share. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+  };
+
 
   return (
     <Box
