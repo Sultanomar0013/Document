@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardActions, Button, Typography, Box, Collapse, TextField } from "@mui/material";
+import { Card, CardContent, CardActions, Button, Typography, Box, Collapse, TextField, MenuItem } from "@mui/material";
 import axios from "axios";
 
 const ShowAttachments = () => {
@@ -7,8 +7,8 @@ const ShowAttachments = () => {
   const [attachments, setAttachments] = useState([]);
   const [showFields, setShowFields] = useState(false);
   const [email, setEmail] = useState("");
-  const [type, setType] = useState("");
-  const [fileId, setFileId] = useState("");
+  const [shareType, setShareType] = useState("");
+  const [docId, setDocId] = useState("");
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -19,18 +19,17 @@ const ShowAttachments = () => {
 
   const fetchAttachments = async () => {
     try {
-      const res = await axios.get(`${backendUrl}document/showDoc` , {
+      const res = await axios.get(`${backendUrl}document/showDoc`, {
         withCredentials: true,
 
       });
       setAttachments(res.data.attachments);
-      console.log("Fetched attachments:", res.data.attachments);
     } catch (error) {
       console.error("Failed to fetch attachments", error);
     }
   };
 
-  const downloadFile = (url, filename) => {
+  const downloadDoc = (url, filename) => {
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', filename);
@@ -42,131 +41,137 @@ const ShowAttachments = () => {
   const openInNewTab = (url) => {
     window.open(url, "_blank");
   };
-  
-   const handleUpdate = () => {
+
+  const handleShare = async () => {
     setLoading(true);
-        setError('');
+    setError('');
 
-        if (!fileId || !type) {
-            setError('All fields are required');
-            setLoading(false);
-            return;
-        }
-     try {
-            const response = await axios.post(`${backendUrl}user/signup`, {
-                fileId,
-                type,
-                password,
-            });
+    if (!docId || !shareType) {
+      setError('All fields are required');
+      setLoading(false);
+      return;
+    }
+    try {
+      const response = await axios.post(`${backendUrl}share/document`, {
+        docId,
+        email,
+        shareType,
+      }, {
+        withCredentials: true
+      });
 
-            const data = response.data;
+      const data = response.data;
 
-            if (data.success) {
-                console.log('Share successful:', data);
-                setLoading(false);
-            } else {
-                setError(data.message || 'Share failed. Please try again.');
-            }
-        } catch (err) {
-            console.error('Share error:', err);
-            setError('Error during Share. Please try again.');
-        } finally {
-            setLoading(false);
-        }
+      if (data.success) {
+        console.log('Share successful:', data);
+        setLoading(false);
+      } else {
+        setError(data.message || 'Share failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('Share error:', err);
+      setError('Error during Share. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
 
   return (
     <Box
-    sx={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 3,
-      p: 3,
-    }}
-  >
-    {attachments.map((file, idx) => (
-      <Card key={idx} sx={{ width: 250, display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative" }}>
-        {/* File Preview */}
-        <Box sx={{ height: 150, backgroundColor: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {file.url.endsWith(".pdf") ? (
-            <Typography variant="subtitle2">PDF Preview</Typography>
-          ) : (
-            <img
-              src={file.url}
-              alt={file.originalName}
-              style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-            />
-          )}
-        </Box>
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 3,
+        p: 3,
+      }}
+    >
+      {attachments.map((doc, idx) => (
+        <Card key={idx} sx={{ width: 250, display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative" }}>
+          {/* doc Preview */}
+          <Box sx={{ height: 150, backgroundColor: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {doc.url.endsWith(".pdf") ? (
+              <Typography variant="subtitle2">PDF Preview</Typography>
+            ) : (
+              <img
+                src={doc.url}
+                alt={doc.originalName}
+                style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+              />
+            )}
+          </Box>
 
-        {/* File Name */}
-        <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
-          <Typography variant="subtitle1" fontWeight="bold" noWrap>
-            {file.originalName}
-          </Typography>
-        </CardContent>
+          {/* doc Name */}
+          <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+            <Typography variant="subtitle1" fontWeight="bold" noWrap>
+              {doc.originalName}
+            </Typography>
+          </CardContent>
 
-        {/* Buttons */}
-        <CardActions sx={{ justifyContent: "center", gap: 1 }}>
-          <Button variant="contained" size="small" onClick={() => openInNewTab(file.url)}>
-            Open
-          </Button>
-          <Button variant="outlined" size="small" onClick={() => downloadFile(file.url, file.originalname)}
+          {/* Buttons */}
+          <CardActions sx={{ justifyContent: "center", gap: 1 }}>
+            <Button variant="contained" size="small" onClick={() => openInNewTab(doc.url)}>
+              Open
+            </Button>
+            <Button variant="outlined" size="small" onClick={() => downloadDoc(doc.url, doc.originalname)}
+            >
+              Download
+            </Button>
+
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => setShowFields(!showFields)}
+              onChange={(e) => setDocId(doc.id)}
+            >
+              Share
+            </Button>
+          </CardActions>
+
+          {/* Shareing option */}
+          <Collapse in={showFields} timeout="auto" unmountOnExit>
+            <Box mt={2} display="flex" flexDirection="column" gap={1}>
+              <TextField
+                label="Email"
+                variant="outlined"
+                size="small"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField
+                select
+                label="Type"
+                variant="outlined"
+                size="small"
+                value={shareType}
+                onChange={(e) => setShareType(e.target.value)}
+              >
+                <MenuItem value={2}>read</MenuItem>
+                <MenuItem value={3}>update</MenuItem>
+              </TextField>
+              <Button variant="contained" size="small" onClick={handleShare}>
+                Update
+              </Button>
+            </Box>
+          </Collapse>
+
+          {/* doc Size at Bottom-Right */}
+          <Typography
+            variant="caption"
+            sx={{
+              //position: "absolute",
+              bottom: 8,
+              right: 0,
+              color: "gray",
+              fontSize: "11px",
+            }}
           >
-            Download
-          </Button>
-
-        <Button
-        variant="outlined"
-        size="small"
-        onClick={() => setShowFields(!showFields)}
-        onChange={(e) => setFileId(file.id)}
-        >
-        Share
-      </Button>
-        </CardActions>
-
-         {/* Shareing option */}
-         <Collapse in={showFields} timeout="auto" unmountOnExit>
-        <Box mt={2} display="flex" flexDirection="column" gap={1}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            size="small"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Type"
-            variant="outlined"
-            size="small"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          />
-          <Button variant="contained" size="small" onClick={handleUpdate}>
-            Update
-          </Button>
-        </Box>
-      </Collapse>
-
-        {/* File Size at Bottom-Right */}
-        <Typography
-          variant="caption"
-          sx={{
-            //position: "absolute",
-            bottom: 8,
-            right: 0,
-            color: "gray",
-            fontSize: "11px",
-          }}
-        >
-          {file.size}KB
-        </Typography>
-      </Card>
-    ))}
-  </Box>
-);
+            {doc.size}KB
+          </Typography>
+        </Card>
+      ))}
+    </Box>
+  );
 };
 
 export default ShowAttachments;

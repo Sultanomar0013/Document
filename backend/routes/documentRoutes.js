@@ -5,7 +5,7 @@ const path = require('path');
 const authenticateToken = require('../middleware/authMiddleware');
 const DocumentController = require('../controllers/documentController');
 const DocumentAuthToken = require('../middleware/docAuthfilter');
- 
+
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -49,5 +49,9 @@ router.get('/download/:fileName', authenticateToken.authToken, (req, res) => {
 });
 // DELETE /delete/:id
 router.delete('/delete/:id', authenticateToken.authToken, DocumentController.deleteDocument);
+
+router.get('/download/:id', authenticateToken.authToken, DocumentController.downloadDocument);
+
+router.post('/shareDocument', authenticateToken.authToken, DocumentController.shareDocument);
 
 module.exports = router;

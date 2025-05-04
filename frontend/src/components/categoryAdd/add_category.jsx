@@ -59,11 +59,9 @@ function AddCategory() {
   const updateModelSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${backendUrl}category/${selectedRow.id}`, selectedRow, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      await axios.put(`${backendUrl}category/${selectedRow.id}`, selectedRow,  {
+        withCredentials: true
+    });
       fetchCategories();
       handleClose();
     } catch (err) {

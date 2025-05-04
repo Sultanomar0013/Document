@@ -54,7 +54,6 @@ class DocumentController {
         return { id: doc.id, size };
       });
 
-
       const attachments = results.map((doc) => ({
         id: doc.id,
         fileName: doc.file_name,
@@ -70,6 +69,9 @@ class DocumentController {
       return res.status(200).json({ attachments });
     });
   }
+
+
+
   static deleteDocument(req, res) {
     const { id } = req.params;
 
@@ -87,6 +89,8 @@ class DocumentController {
       return res.status(200).json({ message: 'Document deleted successfully' });
     });
   }
+
+
   static downloadDocument(req, res) {
     const { id } = req.params;
 
@@ -104,6 +108,19 @@ class DocumentController {
       const filePath = path.join(__dirname, '../uploads', result[0].file_path);
       res.download(filePath);
     });
+  }
+
+  static shareDocument(req, res) {
+    const { fileId, shareType, email } = req.body;
+
+    if (!fileId || !type || !email) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Logic to share the document (e.g., send an email, generate a shareable link, etc.)
+    // For demonstration purposes, we'll just return a success message.
+
+    return res.status(200).json({ message: `Document ${fileId} shared successfully via ${type}` });
   }
 }
 
