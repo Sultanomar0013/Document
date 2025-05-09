@@ -42,39 +42,39 @@ const ShowAttachments = () => {
     window.open(url, "_blank");
   };
 
-  const handleShare = async () => {
-    setLoading(true);
-    setError('');
+  // const handleShare = async () => {
+  //   setLoading(true);
+  //   setError('');
 
-    if (!docId || !shareType) {
-      setError('All fields are required');
-      setLoading(false);
-      return;
-    }
-    try {
-      const response = await axios.post(`${backendUrl}share/document`, {
-        docId,
-        email,
-        shareType,
-      }, {
-        withCredentials: true
-      });
+  //   if (!docId || !shareType) {
+  //     setError('All fields are required');
+  //     setLoading(false);
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.post(`${backendUrl}share/document`, {
+  //       docId,
+  //       email,
+  //       shareType,
+  //     }, {
+  //       withCredentials: true
+  //     });
 
-      const data = response.data;
+  //     const data = response.data;
 
-      if (data.success) {
-        console.log('Share successful:', data);
-        setLoading(false);
-      } else {
-        setError(data.message || 'Share failed. Please try again.');
-      }
-    } catch (err) {
-      console.error('Share error:', err);
-      setError('Error during Share. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (data.success) {
+  //       console.log('Share successful:', data);
+  //       setLoading(false);
+  //     } else {
+  //       setError(data.message || 'Share failed. Please try again.');
+  //     }
+  //   } catch (err) {
+  //     console.error('Share error:', err);
+  //     setError('Error during Share. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
 
   return (
@@ -118,18 +118,34 @@ const ShowAttachments = () => {
               Download
             </Button>
 
-            <Button
+            <Button aria-describedby={id} variant="contained" onClick={handleClick}>
+          Open Popover
+        </Button>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        </Popover>
+
+            {/* <Button
               variant="outlined"
               size="small"
               onClick={() => setShowFields(!showFields)}
               onChange={(e) => setDocId(doc.id)}
             >
               Share
-            </Button>
+            </Button> */}
           </CardActions>
 
           {/* Shareing option */}
-          <Collapse in={showFields} timeout="auto" unmountOnExit>
+          {/* <Collapse in={showFields} timeout="auto" unmountOnExit>
             <Box mt={2} display="flex" flexDirection="column" gap={1}>
               <TextField
                 label="Email"
@@ -153,7 +169,7 @@ const ShowAttachments = () => {
                 Update
               </Button>
             </Box>
-          </Collapse>
+          </Collapse> */}
 
           {/* doc Size at Bottom-Right */}
           <Typography
