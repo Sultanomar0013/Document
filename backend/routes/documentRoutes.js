@@ -33,7 +33,10 @@ const upload = multer({ storage });
 // POST /upload
 router.post('/uploadDoc', authenticateToken.authToken,DocumentAuthToken.docFileSizeChecker , upload.single('file'), DocumentController.uploadDocument);
 // GET /showDoc
-router.get('/showDoc', authenticateToken.authToken, DocumentController.showDocument);
+//router.get('/showDoc', authenticateToken.authToken, DocumentController.showDocument);
+
+// router.get('/showDoc', authenticateToken.authToken, DocumentController.getFolderContents);
+router.get('/showDoc/:parentId?', authenticateToken.authToken, DocumentController.showDocuments);
 // GET /download/:fileName
 router.get('/download/:fileName', authenticateToken.authToken, (req, res) => {
   const fileName = req.params.fileName;

@@ -1,6 +1,6 @@
 //main Dependencies
 import { Routes, Route } from "react-router-dom";
-import { Box, CssBaseline, useMediaQuery } from "@mui/material";
+import { Box, CssBaseline, useMediaQuery, Grid, Menu, MenuItem } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -19,6 +19,7 @@ import AddCategory from "../components/categoryAdd/add_category";
 import FileUploadForm from "../components/documentManage/docUpload.jsx";
 import ShowAttachments from "../components/documentManage/showDocument.jsx";
 
+import  ContextMenu  from "../components/contextMenu/contextMenu.jsx";
 
 const MainHome = () => {
 
@@ -28,6 +29,7 @@ const MainHome = () => {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const backendUrl = import.meta.env.VITE_ADRESS;
     const navigate = useNavigate();
+
 
 
     useEffect(() => {
@@ -67,11 +69,13 @@ const MainHome = () => {
 
 
 
+
+
     return (
 
         <ThemeProvider theme={getTheme(customTheme)}>
             <CssBaseline />
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{ display: "flex" }} >
                 <CssBaseline />
                 <NavBar toggleSidebar={toggleSidebar} mode={customTheme} toggleTheme={toggleTheme} />
                 <SideBar open={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -86,12 +90,24 @@ const MainHome = () => {
                         mt: 8,
                         transition: "margin 0.3s",
                         overflow: 'scroll',
+                        minHeight: '100vh',
+
                     }}
+
+
                 >
+                    {/* Context menu state */}
+
+
+
+
                     <Box sx={{
                         maxWidth: '1440px',
                         flexGrow: 1,
                     }}>
+
+
+
                         <Routes>
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/dashboard" element={<Dashboard />} />

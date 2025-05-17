@@ -10,6 +10,7 @@ const dotenv = require('dotenv');
 const userRoutes = require('./routes/user');
 const categoryRouter = require('./routes/categoryRoutes');
 const documentRoutes = require('./routes/documentRoutes');
+const folderRoutes = require('./routes/folderRoute');
 const cookieParser = require('cookie-parser');
 
 
@@ -35,6 +36,10 @@ app.use('/user', userRoutes);
 app.use('/category', categoryRouter);
 app.use('/document', express.static('uploads'));
 app.use('/document', documentRoutes);
+app.use('/folder', folderRoutes);
+
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello, world! Your server is working!');

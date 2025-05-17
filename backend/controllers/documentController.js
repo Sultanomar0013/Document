@@ -71,6 +71,47 @@ class DocumentController {
   }
 
 
+  static async getFolderContents(req, res) {
+  const { parentId } = req.params;
+
+  try {
+    const [folders] = await db.promise().query(
+      'SELECT * FROM folder_info WHERE parent_id = ?',
+      [parentId || null]
+    );
+
+    const [attachments] = await db.promise().query(
+      'SELECT * FROM attachment_info WHERE folder_id = ?',
+      [parentId || null]
+    );
+
+    res.json({ folders, attachments });
+  } catch (err) {
+    console.error('Fetch folder contents error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+static async showDocuments(req, res) {
+  const { parentId } = req.params;
+  const parent_id = parentId === 'null' ? null : parentId;
+
+  const foldersQuery = 'SELECT * FROM folder_info WHERE parent_id = ?';
+  const docsQuery = 'SELECT * FROM folder_info WHERE folder_id = ?';
+
+  try {
+    const [folders] = await db.promise().query(foldersQuery, [parent_id]);
+    const [attachments] = await db.promise().query(docsQuery, [parent_id]);
+
+    res.json({ folders, attachments });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+
+
 
   static deleteDocument(req, res) {
     const { id } = req.params;
