@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 
-
+ 
 app.use(cors({
   origin: "http://localhost:5173",
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

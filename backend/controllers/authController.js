@@ -79,17 +79,17 @@ class AuthController {
           jwtSecret,
           { expiresIn: '7h' })
 
-          res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
-            maxAge: 7 * 60 * 60 * 1000,
-          });
+        res.cookie('token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'Strict',
+          maxAge: 7 * 60 * 60 * 1000,
+        });
 
-          return res.json({
-            success: true,
-            message: 'Logged in successfully',
-          });
+        return res.json({
+          success: true,
+          message: 'Logged in successfully',
+        });
       });
     });
 
@@ -99,30 +99,8 @@ class AuthController {
 
 
   static async verifyToken(req, res, next) {
-    // const token = req.headers['authorization']?.split(' ')[1];
 
-    // if (!token) {
-    //   return res.status(401).json({ success: false, message: 'No token provided' });
-    // }
-
-    // jwt.verify(token, jwtSecret, (err, decoded) => {
-    //   if (err) {
-    //     console.error('Token verification error:', err);
-    //     return res.status(401).json({ success: false, message: 'Invalid token' });
-    //   }
-
-    //   req.user = decoded;
-    //   next();
-    // });
-
-
-    const authHeader = req.headers['authorization'];
-
-    if (!authHeader) {
-      return res.status(401).json({ success: false, message: 'No token provided' });
-    }
-
-    const token = authHeader.split(' ')[1]; // Get the token after "Bearer"
+    const token = req.cookies.token;
 
     if (!token) {
       return res.status(401).json({ success: false, message: 'Token missing or malformed' });
@@ -135,6 +113,7 @@ class AuthController {
       }
 
       req.user = decoded;
+      console.log('Decoded user:', req.user);
       next();
     });
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   Card, CardContent, CardActions, Button,
   Typography, Box, Popover, Paper,
@@ -14,7 +14,7 @@ import axios from "axios";
 import ContextMenu from '../contextMenu/contextMenu';
 
 
-const ShowAttachments = ({ parentId }) => {
+const ShowAttachments = () => {
   const backendUrl = import.meta.env.VITE_ADRESS;
   const [folders, setFolders] = useState([]);
   const [attachments, setAttachments] = useState([]);
@@ -22,18 +22,24 @@ const ShowAttachments = ({ parentId }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [parentId, setParentId] = useState(null);
 
 
+console.log("Full URL:", `${import.meta.env.VITE_ADRESS}user/getUserId`);
 
 
 useEffect(() => {
   const fetchUserId = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_ADRESS}user/get_user_id`, {
-        withCredentials: true, // 🔑 Important: sends cookie
+      const res = await axios.get(`${backendUrl}user/getUserId`, {
+        withCredentials: true,
       });
-      setUserId(res.data.userId);
-      fetchContents(res.data.userId); // use as default parent_id
+      const id = res.data.userId;
+      setUserId(id);
+      setParentId(id);
+      fetchContents(id); // Pass userId directly
+      console.log('userId:',userId,':',parentId)
+      console.log("Parent ID set from userId:", id);
     } catch (err) {
       console.error("Failed to get user", err);
     }
@@ -42,30 +48,25 @@ useEffect(() => {
   fetchUserId();
 }, []);
 
-  useEffect(()=> {
-    if(!parentId) {
-      parentId = userId;
-    }
-    console.log("Parent ID:", parentId);
-    console.log("User ID:", userId);
-  })
 
-  useEffect(() => {
-    fetchContents();
-  }, [parentId]);
+const fetchContents = useCallback(async (id) => {
+  try {
+    const res = await axios.get(`${backendUrl}document/showDoc/${id || 'null'}`, {
+      withCredentials: true,
+    });
+    setFolders(res.data.folders);
+    setAttachments(res.data.attachments);
+    setCurrentFolderId(id || null);
+  } catch (error) {
+    console.error("Failed to fetch data", error);
+  }
+}, [backendUrl]); // include stable deps
 
-  const fetchContents = async () => {
-    try {
-      const res = await axios.get(`${backendUrl}document/showDoc/${parentId || 'null'}`, {
-        withCredentials: true,
-      });
-      setFolders(res.data.folders);
-      setAttachments(res.data.attachments);
-      setCurrentFolderId(parentId || null);
-    } catch (error) {
-      console.error("Failed to fetch data", error);
-    }
-  };
+// useEffect(() => {
+//   if (parentId) {
+//     fetchContents();
+//   }
+// }, [fetchContents, parentId]);
 
   const openInNewTab = (url) => {
     window.open(url, "_blank");

@@ -25,8 +25,8 @@ router.post('/login', AuthController.login, (req, res) => {
 router.post('/auth', AuthController.verifyToken, (req, res) => {
   res.json({ success: true, message: 'Token is valid' });
 });
-router.post('/get_user_id', AuthController.verifyToken, (req, res) => {
-  res.json({ success: true, message: 'Token is valid' });
+router.get('/getUserId', AuthController.verifyToken, (req, res) => {
+  res.json({ success: true, userId: req.user.id });
 });
 // Logout Route
 router.post('/logout', AuthController.logout, (req, res) => {
