@@ -3,7 +3,7 @@ import {
   Card, CardContent, CardActions, Button,
   Typography, Box, Popover, Paper,
   MenuList, ListItemText, ListItemIcon,
-  Grid
+  Grid, MenuItem
 } from "@mui/material";
 import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
@@ -19,67 +19,75 @@ const ShowAttachments = () => {
   const [folders, setFolders] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [menuPosition, setMenuPosition] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [userId, setUserId] = useState(null);
   const [parentId, setParentId] = useState(null);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElId, setAnchorElId] = useState(null);
 
-console.log("Full URL:", `${import.meta.env.VITE_ADRESS}user/getUserId`);
-
-
-useEffect(() => {
-  const fetchUserId = async () => {
-    try {
-      const res = await axios.get(`${backendUrl}user/getUserId`, {
-        withCredentials: true,
-      });
-      const id = res.data.userId;
-      setUserId(id);
-      setParentId(id);
-      fetchContents(id); // Pass userId directly
-      console.log('userId:',userId,':',parentId)
-      console.log("Parent ID set from userId:", id);
-    } catch (err) {
-      console.error("Failed to get user", err);
-    }
+  const handleClick = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setAnchorElId(id);
   };
 
-  fetchUserId();
-}, []);
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  //   setAnchorElId(null);
+  // };
+
+  const downloadDoc = (url, name) => {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+  };
 
 
-const fetchContents = useCallback(async (id) => {
-  try {
-    const res = await axios.get(`${backendUrl}document/showDoc/${id || 'null'}`, {
-      withCredentials: true,
-    });
-    setFolders(res.data.folders);
-    setAttachments(res.data.attachments);
-    setCurrentFolderId(id || null);
-  } catch (error) {
-    console.error("Failed to fetch data", error);
-  }
-}, [backendUrl]); // include stable deps
 
-// useEffect(() => {
-//   if (parentId) {
-//     fetchContents();
-//   }
-// }, [fetchContents, parentId]);
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const res = await axios.get(`${backendUrl}user/getUserId`, {
+          withCredentials: true,
+        });
+        const id = res.data.userId;
+        setUserId(id);
+        setParentId(id);
+        fetchContents(id); // Pass userId directly
+      } catch (err) {
+        console.error("Failed to get user", err);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+
+  const fetchContents = useCallback(async (parentId) => {
+    try {
+      const res = await axios.get(`${backendUrl}document/showDoc/${parentId || 'null'}`, {
+        withCredentials: true,
+      });
+      setFolders(res.data.folders);
+      console.log("Fetched folders:", res.data.folders);
+      setAttachments(res.data.attachments);
+      setCurrentFolderId(id || null);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  }, [backendUrl]); // include stable deps
+
+  // useEffect(() => {
+  //   if (parentId) {
+  //     fetchContents();
+  //   }
+  // }, [fetchContents, parentId]);
 
   const openInNewTab = (url) => {
     window.open(url, "_blank");
   };
 
-  const downloadDoc = (url, filename) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  };
 
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -90,9 +98,9 @@ const fetchContents = useCallback(async (id) => {
     setMenuPosition(null);
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -126,67 +134,87 @@ const fetchContents = useCallback(async (id) => {
         ))}
 
 
-        {attachments.map((doc) => (
-          <Grid item xs={12} sm={6} md={3} key={`doc-${doc.id}`}>
-            <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              <Box sx={{ height: 150, backgroundColor: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                {doc.url.endsWith(".pdf") ? (
-                  <Typography variant="subtitle2">PDF Preview</Typography>
-                ) : (
-                  <img
-                    src={doc.url}
-                    alt={doc.originalName}
-                    style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                  />
-                )}
-              </Box>
+        {attachments.map((doc) => {
+          const fileUrl = `/uploads/${doc.file_path}`;
+          const isPdf = fileUrl.endsWith(".pdf");
 
-              <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
-                <Typography variant="subtitle1" fontWeight="bold" noWrap>
-                  {doc.originalName}
-                </Typography>
-              </CardContent>
-
-              <CardActions sx={{ justifyContent: "center", gap: 1 }}>
-                <Button variant="contained" size="small" onClick={() => openInNewTab(doc.url)}>
-                  Open
-                </Button>
-                <Button variant="outlined" size="small" onClick={() => downloadDoc(doc.url, doc.originalName)}>
-                  Download
-                </Button>
-                <Button aria-describedby={id} variant="contained" onClick={handleClick}>...</Button>
-                <Popover
-                  id={id}
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          return (
+            <Grid item xs={12} sm={6} md={3} key={`doc-${doc.file_id}`}>
+              <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <Box
+                  sx={{
+                    height: 150,
+                    backgroundColor: "#f5f5f5",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  <Paper sx={{ width: 320 }}>
-                    <MenuList>
-                      <MenuItem>
-                        <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
-                        <ListItemText>Cut</ListItemText>
-                      </MenuItem>
-                      <MenuItem>
-                        <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
-                        <ListItemText>Copy</ListItemText>
-                      </MenuItem>
-                      <MenuItem>
-                        <ListItemIcon><ShareIcon fontSize="small" /></ListItemIcon>
-                        <ListItemText>Share</ListItemText>
-                      </MenuItem>
-                    </MenuList>
-                  </Paper>
-                </Popover>
-              </CardActions>
+                  {isPdf ? (
+                    <Typography variant="subtitle2">PDF Preview</Typography>
+                  ) : (
+                    <img
+                      src={fileUrl}
+                      alt={doc.file_name}
+                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                    />
+                  )}
+                </Box>
 
-              <Typography variant="caption" sx={{ textAlign: "right", p: 1, fontSize: '11px', color: 'gray' }}>
-                {doc.size}KB
-              </Typography>
-            </Card>
-          </Grid>
-        ))}
+                <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+                  <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                    {doc.file_name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {doc.details}
+                  </Typography>
+                </CardContent>
+
+                <CardActions sx={{ justifyContent: "center", gap: 1 }}>
+                  <Button variant="contained" size="small" onClick={() => openInNewTab(fileUrl)}>
+                    Open
+                  </Button>
+                  <Button variant="outlined" size="small" onClick={() => downloadDoc(fileUrl, doc.file_name)}>
+                    Download
+                  </Button>
+                  <Button aria-describedby={`popover-${doc.file_id}`} variant="contained" onClick={(e) => handleClick(e, doc.file_id)}>
+                    ...
+                  </Button>
+                  <Popover
+                    id={`popover-${doc.file_id}`}
+                    open={anchorElId === doc.file_id}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                  >
+                    <Paper sx={{ width: 200 }}>
+                      <MenuList>
+                        <MenuItem>
+                          <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
+                          <ListItemText>Cut</ListItemText>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
+                          <ListItemText>Copy</ListItemText>
+                        </MenuItem>
+                        <MenuItem>
+                          <ListItemIcon><ShareIcon fontSize="small" /></ListItemIcon>
+                          <ListItemText>Share</ListItemText>
+                        </MenuItem>
+                      </MenuList>
+                    </Paper>
+                  </Popover>
+                </CardActions>
+
+                <Typography variant="caption" sx={{ textAlign: "right", p: 1, fontSize: '11px', color: 'gray' }}>
+                  {/* Optional: If you want to calculate file size or created date */}
+                  Uploaded by user ID: {doc.user_id}
+                </Typography>
+              </Card>
+            </Grid>
+          );
+        })}
+
       </Grid>
     </Box>
   );

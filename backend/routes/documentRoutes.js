@@ -55,6 +55,6 @@ router.delete('/delete/:id', authenticateToken.authToken, DocumentController.del
 
 router.get('/download/:id', authenticateToken.authToken, DocumentController.downloadDocument);
 
-router.post('/shareDocument', authenticateToken.authToken, DocumentController.shareDocument);
+// router.post('/shareDocument', authenticateToken.authToken, DocumentController.shareDocument);
 
 module.exports = router;

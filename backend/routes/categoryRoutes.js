@@ -9,4 +9,3 @@ router.post('/', authenticateToken.authToken, CategoryController.create);
 router.put('/:id', authenticateToken.authToken, CategoryController.update);
 
 module.exports = router;
- 
