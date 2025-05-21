@@ -21,6 +21,7 @@ const ShowAttachments = () => {
   const [menuPosition, setMenuPosition] = useState(null);
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [folderId, setFolderId] = useState(null);
   const [parentId, setParentId] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,10 +52,12 @@ const ShowAttachments = () => {
         const res = await axios.get(`${backendUrl}user/getUserId`, {
           withCredentials: true,
         });
-        const id = res.data.userId;
-        setUserId(id);
-        setParentId(id);
-        fetchContents(id); // Pass userId directly
+        const userid = res.data.userId;
+        const folderid = res.data.folderId;
+        setUserId(userid);
+        setFolderId(folderid);
+        setParentId(folderid);
+        fetchContents(userid); // Pass userId directly
       } catch (err) {
         console.error("Failed to get user", err);
       }
@@ -78,11 +81,6 @@ const ShowAttachments = () => {
     }
   }, [backendUrl]); // include stable deps
 
-  // useEffect(() => {
-  //   if (parentId) {
-  //     fetchContents();
-  //   }
-  // }, [fetchContents, parentId]);
 
   const openInNewTab = (url) => {
     window.open(url, "_blank");
@@ -105,6 +103,21 @@ const ShowAttachments = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleFolderClick = async (id) => {
+    // setParentId(id);
+    // try {
+    //   const res = await axios.get(`${backendUrl}document/showDoc/${id}`, {
+    //     withCredentials: true,
+    //   });
+    //   setFolders(res.data.folders);
+    //   console.log("Fetched folders:", res.data.folders);
+    //   setAttachments(res.data.attachments);
+    //   setCurrentFolderId(id || null);
+    // } catch (error) {
+    //   console.error("Failed to fetch data", error);
+    // }
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;

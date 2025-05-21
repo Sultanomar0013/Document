@@ -22,8 +22,12 @@ class AuthController {
       req.body.hashedPassword = hashedPassword;
 
       const query = 'INSERT INTO user (email, userName, password) VALUES (?, ?, ?)';
-      const [result] = await db.query(query, [email, userName, hashedPassword]);
 
+      const [result] = await db.query(query, [email, userName, hashedPassword]);
+      const newUserId = result.insertId;
+
+      const Folderquery = 'INSERT INTO folder_info (folder_name,parent_id,user_id ) VALUES (?, ?)';
+      const [folderresult] = await db.query(Folderquery, [newUserId, '0', newUserId]);
       // Optional: attach inserted user info to the request
       req.user = {
         id: result.insertId,
@@ -52,22 +56,26 @@ class AuthController {
       const query = 'SELECT * FROM user WHERE email = ?';
       const [results] = await db.query(query, [email]);
 
-      if (results.length === 0) {
+      const folderQuery = 'SELECT * FROM folder_info WHERE user_id = ? and parent_id = 0 and folder_name = ?';
+      const [folderResults] = await db.query(folderQuery, [results[0].id], [results[0].id]);
+
+      if (results.length === 0 || folderResults.length === 0) {
         return res.status(400).json({ success: false, message: 'Unable to log in' });
       }
 
       const user = results[0];
+      const folder = folderResults[0];
       const hashedPassword = user.password;
-
       const isMatch = await bcrypt.compare(password, hashedPassword);
       if (!isMatch) {
         return res.status(400).json({ success: false, message: 'Incorrect email or password' });
       }
 
-      req.user = user;
 
+      req.user = user;
+      req.user.folder = folder;
       const token = jwt.sign(
-        { id: user.id, email: user.email, password: user.password },
+        { id: user.id, email: user.email, password: user.password, folder_id: folder.id },
         jwtSecret,
         { expiresIn: '7h' }
       );

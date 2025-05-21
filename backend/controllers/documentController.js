@@ -98,10 +98,10 @@ class DocumentController {
     const userId = req.user.id;
 
     const parent_id = parentId === 'null' ? null : parentId;
-    const foldersQuery = 'SELECT * FROM folder_info WHERE (folder_name = ? and parent_id = "0") or parent_id = ?'; // fixed query here
+    const foldersQuery = 'SELECT * FROM folder_info WHERE (folder_name != ? and parent_id != "0") or parent_id = ? and user_id = ?'; // fixed query here
     const docsQuery = 'SELECT a.file_id,a.folder_id,a.user_id,b.file_name,b.details,b.category_id,b.file_path FROM file_directory a join files b on a.file_id = b.id join folder_info c on a.folder_id = c.id  WHERE (c.folder_name = ? and c.parent_id = "0") OR c.parent_id = ?  '; // fixed query here
     try {
-      const [folders] = await db.query(foldersQuery, [parent_id, parent_id]);
+      const [folders] = await db.query(foldersQuery, [parent_id, parent_id, userId]);
       const [attachments] = await db.query(docsQuery, [parent_id, parent_id]);
       console.log('Fetched folders:', folders);
       res.json({ folders, attachments });
