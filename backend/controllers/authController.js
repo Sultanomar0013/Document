@@ -64,7 +64,7 @@ class AuthController {
       }
 
       const user = results[0];
-      console.log('folder',folderResults);
+      console.log('folder', folderResults);
       const RootFolder = folderResults[0];
       const hashedPassword = user.password;
       const isMatch = await bcrypt.compare(password, hashedPassword);

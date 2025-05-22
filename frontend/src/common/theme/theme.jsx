@@ -20,6 +20,9 @@ const defaultTheme = createTheme({
       secondary: "#FFFFFF", // Define secondary text color
       third: "#000",
     },
+    seperator: {
+      main: "#000",
+    },
   },
   components: {
     MuiInputLabel: {
@@ -53,6 +56,9 @@ const darkTheme = createTheme({
       secondary: "#FFFFFF", // Define secondary text color
       third: "#000",
     },
+    seperator: {
+      main: "#FFFFFF",
+    },
   },
 });
 
@@ -73,6 +79,9 @@ const greenTheme = createTheme({
       primary: "#000", // Define primary text color
       secondary: "#FFFFFF", // Define secondary text color
       third: "#000",
+    },
+    seperator: {
+      main: "#000",
     },
   },
   components: {

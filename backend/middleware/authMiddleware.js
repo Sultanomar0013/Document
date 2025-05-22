@@ -5,6 +5,7 @@ const secret = process.env.JWT_SECRET;
 class authenticateToken {
   static authToken(req, res, next) {
     const token = req.cookies.token;
+    console.log('Token:', token);
     if (!token) return res.status(401).json({ message: 'No token provided' });
     jwt.verify(token, secret, (err, user) => {
       if (err) return res.status(403).json({ message: 'Invalid token' });

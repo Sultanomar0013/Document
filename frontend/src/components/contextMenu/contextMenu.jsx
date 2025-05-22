@@ -1,43 +1,48 @@
 import React, { useState } from 'react';
-import { Grid, Menu, MenuItem, Divider, Modal, Box, Typography, TextField, Button } from '@mui/material';
+import {
+  Grid, Menu, MenuItem, Divider, Modal, Box, Typography, TextField, Button
+} from '@mui/material';
 import axios from 'axios';
 
-function ContextMenu({ handleContextClose, menuPosition }) {
+function ContextMenu({ handleContextClose, menuPosition, path, parent_id }) {
   const [createFolderModal, setCreateFolderModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [folderName, setFolderName] = useState("");
 
+  // Open Modal with clean input
+  const handleCreateFolder = () => {
+    setFolderName("");
+    setCreateFolderModal(true);
+  };
 
+  const handleCreateFolderClose = () => {
+    setCreateFolderModal(false);
+  };
 
-  const handleCreateFolder = () =>{ setCreateFolderModal(true)};
-  const handleCreateFolderClose = () => setCreateFolderModal(false);
   const handleCreateFolderSubmit = async (e) => {
+
     e.preventDefault();
+    console.log("Form Submitted");
     try {
-      await axios.post(`${import.meta.env.VITE_ADRESS}folder/create`, selectedRow, {
+      if (!folderName.trim()) return alert("Folder name is required");
+      await axios.post(`${import.meta.env.VITE_ADRESS}folder/create`, {
+        folder_name: folderName,
+        path,
+        parent_id,
+      }, {
         withCredentials: true,
       });
+
       handleCreateFolderClose();
       handleContextClose();
     } catch (err) {
       console.error('Error creating folder:', err);
     }
   };
-  const handlEditFolder = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(`${import.meta.env.VITE_ADRESS}category/${selectedRow.id}`, selectedRow, {
-        withCredentials: true,
-      });
-      handleCreateFolderClose();
-    } catch (err) {
-      console.error('Error updating folder:', err);
-    }
+
+  const handleUploadDocument = () => {
+    alert('Upload Document clicked');
+    handleContextClose();
   };
-
-
-  const handleUploadDocument = () => alert('Upload Document clicked');
-
 
   const style = {
     position: 'absolute',
@@ -52,63 +57,45 @@ function ContextMenu({ handleContextClose, menuPosition }) {
   };
 
   return (
-    <Grid >
+    <>
       <Menu
-        open={menuPosition !== null}
+        open={Boolean(menuPosition)}
         onClose={handleContextClose}
         anchorReference="anchorPosition"
         anchorPosition={
-          menuPosition !== null
-            ? { top: menuPosition.top, left: menuPosition.left }
-            : undefined
+          menuPosition ? { top: menuPosition.top, left: menuPosition.left } : undefined
         }
       >
-        <MenuItem
-          onClick={() => {
-            // handleContextClose();
-            handleCreateFolder();
-          }}
-        >
-          Create Folder
-        </MenuItem>
+        <MenuItem onClick={handleCreateFolder}>Create Folder</MenuItem>
         <Divider />
-        <MenuItem
-          onClick={() => {
-            handleContextClose();
-            handleUploadDocument();
-          }}
-        >
-          Upload Document
-        </MenuItem>
+        <MenuItem onClick={handleUploadDocument}>Upload Document</MenuItem>
       </Menu>
+
       <Modal open={createFolderModal} onClose={handleCreateFolderClose}>
         <Box sx={style}>
-          <form onSubmit={isEditing ? handlEditFolder : handleCreateFolderSubmit}>
-            <Typography variant="h6" sx={{ p: 1 }} gutterBottom>
-              {isEditing ? 'Edit Folder' : 'Create Folder'}
+          <form onSubmit={handleCreateFolderSubmit}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Create Folder
             </Typography>
-            <Grid container spacing={2}>
-              <Grid item sx={{ p: 1, width: '100%' }}>
-
-                <TextField
-                  fullWidth
-                  label="Folder Name"
-                  value={selectedRow?.folder_name || ''}
-                  onChange={(e) => setSelectedRow({ ...selectedRow, folder_name: e.target.value })}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sx={{ p: 1 }}>
-                <Button type="submit" variant="contained" fullWidth>
-                  {isEditing ? 'Update' : 'Submit'}
-                </Button>
-              </Grid>
-            </Grid>
+            <TextField
+              fullWidth
+              label="Folder Name"
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
+              required
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ mt: 2 }}
+            >
+              Submit
+            </Button>
           </form>
         </Box>
       </Modal>
-
-    </Grid>
+    </>
   );
 }
 

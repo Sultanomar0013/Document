@@ -19,7 +19,7 @@ import AddCategory from "../components/categoryAdd/add_category";
 import FileUploadForm from "../components/documentManage/docUpload.jsx";
 import ShowAttachments from "../components/documentManage/showDocument.jsx";
 
-import  ContextMenu  from "../components/contextMenu/contextMenu.jsx";
+import ContextMenu from "../components/contextMenu/contextMenu.jsx";
 
 const MainHome = () => {
 
@@ -61,15 +61,6 @@ const MainHome = () => {
             window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
-
-
-
-
-
-
-
-
-
 
     return (
 
