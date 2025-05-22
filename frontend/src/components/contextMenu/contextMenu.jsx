@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Grid, Menu, MenuItem, Divider, Modal, Box, Typography, TextField, Button } from '@mui/material';
 import axios from 'axios';
 
-function ContextMenu({ handleClose, menuPosition }) {
+function ContextMenu({ handleContextClose, menuPosition }) {
   const [createFolderModal, setCreateFolderModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -18,7 +18,7 @@ function ContextMenu({ handleClose, menuPosition }) {
         withCredentials: true,
       });
       handleCreateFolderClose();
-      handleClose();
+      handleContextClose();
     } catch (err) {
       console.error('Error creating folder:', err);
     }
@@ -55,7 +55,7 @@ function ContextMenu({ handleClose, menuPosition }) {
     <Grid >
       <Menu
         open={menuPosition !== null}
-        onClose={handleClose}
+        onClose={handleContextClose}
         anchorReference="anchorPosition"
         anchorPosition={
           menuPosition !== null
@@ -65,7 +65,7 @@ function ContextMenu({ handleClose, menuPosition }) {
       >
         <MenuItem
           onClick={() => {
-            // handleClose();
+            // handleContextClose();
             handleCreateFolder();
           }}
         >
@@ -74,7 +74,7 @@ function ContextMenu({ handleClose, menuPosition }) {
         <Divider />
         <MenuItem
           onClick={() => {
-            handleClose();
+            handleContextClose();
             handleUploadDocument();
           }}
         >

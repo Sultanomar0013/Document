@@ -47,7 +47,6 @@ class AuthController {
   static async login(req, res, next) {
     const { email, password } = req.body;
 
-
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
@@ -55,16 +54,18 @@ class AuthController {
     try {
       const query = 'SELECT * FROM user WHERE email = ?';
       const [results] = await db.query(query, [email]);
-
+      const folder_id = results[0].id;
       const folderQuery = 'SELECT * FROM folder_info WHERE user_id = ? and parent_id = 0 and folder_name = ?';
-      const [folderResults] = await db.query(folderQuery, [results[0].id], [results[0].id]);
+      // console.log('folderQuery', folderQuery);
+      const [folderResults] = await db.query(folderQuery, [results[0].id, folder_id]);
 
       if (results.length === 0 || folderResults.length === 0) {
         return res.status(400).json({ success: false, message: 'Unable to log in' });
       }
 
       const user = results[0];
-      const folder = folderResults[0];
+      console.log('folder',folderResults);
+      const RootFolder = folderResults[0];
       const hashedPassword = user.password;
       const isMatch = await bcrypt.compare(password, hashedPassword);
       if (!isMatch) {
@@ -73,9 +74,9 @@ class AuthController {
 
 
       req.user = user;
-      req.user.folder = folder;
+      req.user.folder = RootFolder;
       const token = jwt.sign(
-        { id: user.id, email: user.email, password: user.password, folder_id: folder.id },
+        { id: user.id, email: user.email, password: user.password, folder_id: RootFolder.id },
         jwtSecret,
         { expiresIn: '7h' }
       );
