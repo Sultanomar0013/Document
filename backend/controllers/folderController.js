@@ -1,4 +1,7 @@
 const db = require('../model/db');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 class folderController {
   // GET all folders
@@ -10,19 +13,28 @@ class folderController {
     const pathString = path.map(folder => folder.id).join('/');
     console.log('Path:', pathString);
 
-    // if (!folder_name || !user_id || !path) {
-    //   return res.status(400).json({ success: false, message: 'Folder name, user ID, and path required' });
-    // }
+    if (!folder_name || !user_id || !path) {
+      return res.status(400).json({ success: false, message: 'Folder name, user ID, and path required' });
+    }
 
-    // const query = 'INSERT INTO folder_info (folder_name, parent_id, entry_by) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO folder_info (folder_name, parent_id, entry_by) VALUES (?, ?, ?)';
 
-    // try {
-    //   const [result] = await db.query(query, [folder_name, parent_id || null, entry_by]);
-    //   res.status(201).json({ id: result.insertId, folder_name, parent_id, entry_by });
-    // } catch (err) {
-    //   console.error('Error inserting folder:', err);
-    //   res.status(500).json({ success: false, message: 'Failed to add folder' });
-    // }
+    try {
+      const [result] = await db.query(query, [folder_name, parent_id || null, user_id]);
+      res.status(201).json({ id: result.insertId, folder_name, parent_id, user_id });
+      const id = result.insertId;
+      const folderPath = path.join(__dirname, '..', 'uploads', String(pathString), String(id));
+      fs.mkdir(folderPath, { recursive: true }, (err) => {
+        if (err) {
+          console.error('Error creating folder:', err);
+          return res.status(500).json({ success: false, message: 'Failed to create folder' });
+        }
+        console.log('Folder created successfully:', folderPath);
+      });
+    } catch (err) {
+      console.error('Error inserting folder:', err);
+      res.status(500).json({ success: false, message: 'Failed to add folder' });
+    }
   }
 
 
