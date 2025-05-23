@@ -7,23 +7,24 @@ class folderController {
   // GET all folders
   // POST create folder
   static async create(req, res) {
-    const { folder_name, parent_id, path } = req.body;
+    const { folder_name, parent_id, pathDir } = req.body;
     const user_id = req.user.id;
 
-    const pathString = path.map(folder => folder.id).join('/');
+    const pathString = pathDir.map(folder => folder.id).join('/');
     console.log('Path:', pathString);
 
-    if (!folder_name || !user_id || !path) {
-      return res.status(400).json({ success: false, message: 'Folder name, user ID, and path required' });
+    if (!folder_name || !user_id || !pathDir) {
+      return res.status(400).json({ success: false, message: 'Folder name, user ID, and pathDir required' });
     }
 
-    const query = 'INSERT INTO folder_info (folder_name, parent_id, entry_by) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO folder_info (folder_name, parent_id, user_id) VALUES (?, ?, ?)';
 
     try {
       const [result] = await db.query(query, [folder_name, parent_id || null, user_id]);
       res.status(201).json({ id: result.insertId, folder_name, parent_id, user_id });
       const id = result.insertId;
       const folderPath = path.join(__dirname, '..', 'uploads', String(pathString), String(id));
+      console.log('Folder path hello:', folderPath);
       fs.mkdir(folderPath, { recursive: true }, (err) => {
         if (err) {
           console.error('Error creating folder:', err);

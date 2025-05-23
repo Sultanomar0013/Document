@@ -15,6 +15,10 @@ import axios from "axios";
 import ContextMenu from '../contextMenu/contextMenu';
 import { useTheme } from '@mui/material/styles';
 
+import FolderShow from './folderShow';
+import FileShow from './fileShow';
+import { useParams } from "react-router-dom";
+
 
 
 
@@ -25,53 +29,14 @@ const ShowAttachments = () => {
   const [folders, setFolders] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [menuPosition, setMenuPosition] = useState(null);
-  const [currentFolderId, setCurrentFolderId] = useState(null);
+  // const [currentFolderId, setCurrentFolderId] = useState(null);
   const [userId, setUserId] = useState(null);
   const [folderId, setFolderId] = useState(null);
   const [parentId, setParentId] = useState(null);
-
-  const [anchorEl, setAnchorEl] = useState();
-  const [anchorElId, setAnchorElId] = useState(null);
   const [folderPath, setFolderPath] = useState([]);
-  const [popoverState, setPopoverState] = useState({
-    anchorEl: null,
-    docId: null,
-  });
-
-  const handleClick = (event, docId) => {
-    setPopoverState({
-      anchorEl: event.currentTarget,
-      docId,
-    });
-  };
-
-  const handleClose = () => {
-    setPopoverState({
-      anchorEl: null,
-      docId: null,
-    });
-  }
-
-  // const handleClick = (event, id) => {
-  //   setAnchorEl(event.currentTarget);
-  //   setAnchorElId(id);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(!anchorEl);
-  // };
-  // const open = Boolean(anchorEl);
-
-  const isPopoverOpen = (docId) => popoverState.docId === docId;
-  const id = open ? 'simple-popover' : undefined;
 
 
 
-  const downloadDoc = (url, name) => {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    a.click();
-  };
 
 
 
@@ -89,7 +54,6 @@ const ShowAttachments = () => {
           setParentId(folderid);
           const homeFolder = { id: folderid, folder_name: 'Home' };
           setFolderPath([homeFolder]);
-
           // Reset folder path
         }
       } catch (err) {
@@ -123,7 +87,7 @@ const ShowAttachments = () => {
       });
       setFolders(res.data.folders);
       setAttachments(res.data.attachments);
-      setCurrentFolderId(id || null);
+      // setCurrentFolderId(id || null);
 
     } catch (error) {
       console.error("Failed to fetch data", error);
@@ -131,9 +95,7 @@ const ShowAttachments = () => {
   }, [backendUrl]); // include stable deps
 
 
-  const openInNewTab = (url) => {
-    window.open(url, "_blank");
-  };
+
 
 
   const handleContextMenu = (event) => {
@@ -181,102 +143,9 @@ const ShowAttachments = () => {
 
       <Grid container spacing={2} p={3}>
         {/* FOLDERS */}
-        {folders.map((folder) => (
-          <Card key={folder.id} sx={{ width: 250, cursor: 'pointer' }} onClick={() => handleFolderClick(folder)}>
-            <Box sx={{ height: 150, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <FolderIcon sx={{ fontSize: 80, color: "#1976d2" }} />
-            </Box>
-            <CardContent>
-              <Typography variant="subtitle1" align="center" noWrap>
-                {folder.folder_name}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-
-
-        {attachments.map((doc) => {
-          const fileUrl = `/uploads/${doc.file_path}`;
-          const isPdf = fileUrl.endsWith(".pdf");
-
-          return (
-            <Grid item xs={12} sm={6} md={3} key={`doc-${doc.file_id}`}>
-              <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <Box
-                  sx={{
-                    height: 150,
-                    backgroundColor: "#f5f5f5",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {isPdf ? (
-                    <Typography variant="subtitle2">PDF Preview</Typography>
-                  ) : (
-                    <img
-                      src={fileUrl}
-                      alt={doc.file_name}
-                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                    />
-                  )}
-                </Box>
-
-                <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
-                  <Typography variant="subtitle1" fontWeight="bold" noWrap>
-                    {doc.file_name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" noWrap>
-                    {doc.details}
-                  </Typography>
-                </CardContent>
-
-                <CardActions sx={{ justifyContent: "center", gap: 1 }}>
-                  <Button variant="contained" size="small" onClick={() => openInNewTab(fileUrl)}>
-                    Open
-                  </Button>
-                  <Button variant="outlined" size="small" onClick={() => downloadDoc(fileUrl, doc.file_name)}>
-                    Download
-                  </Button>
-                  <Button aria-describedby={`popover-${doc.file_id}`}
-                    variant="contained" onClick={(e) => handleClick(e, doc.file_id)}>
-                    ...
-                  </Button>
-                  <Popover
-                    id={`popover-${doc.file_id}`}
-                    open={isPopoverOpen(doc.file_id)}
-                    anchorEl={popoverState.anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                  >
-                    <Paper sx={{ width: 200 }}>
-                      <MenuList>
-                        <MenuItem>
-                          <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
-                          <ListItemText>Cut</ListItemText>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
-                          <ListItemText>Copy</ListItemText>
-                        </MenuItem>
-                        <MenuItem>
-                          <ListItemIcon><ShareIcon fontSize="small" /></ListItemIcon>
-                          <ListItemText>Share</ListItemText>
-                        </MenuItem>
-                      </MenuList>
-                    </Paper>
-                  </Popover>
-                </CardActions>
-
-                <Typography variant="caption" sx={{ textAlign: "right", p: 1, fontSize: '11px', color: 'gray' }}>
-                  {/* Optional: If you want to calculate file size or created date */}
-                  Uploaded by user ID: {doc.user_id}
-                </Typography>
-              </Card>
-            </Grid>
-          );
-        })}
-
+        <FolderShow folders={folders} handleFolderClick={(folder) => handleFolderClick(folder)} />
+        {/* FILES */}
+        <FileShow attachments={attachments} />
       </Grid>
     </Box>
   );

@@ -26,7 +26,7 @@ function ContextMenu({ handleContextClose, menuPosition, path, parent_id }) {
       if (!folderName.trim()) return alert("Folder name is required");
       await axios.post(`${import.meta.env.VITE_ADRESS}folder/create`, {
         folder_name: folderName,
-        path,
+        pathDir: path,
         parent_id,
       }, {
         withCredentials: true,
