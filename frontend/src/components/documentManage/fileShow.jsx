@@ -16,33 +16,34 @@ import axios from "axios";
 
 
 
-const FileShow = ({ attachments }) => {
+const FileShow = ({ attachments, setClipboard }) => {
   const [anchorEl, setAnchorEl] = useState();
   const [anchorElId, setAnchorElId] = useState(null);
   const [popoverState, setPopoverState] = useState({
     anchorEl: null,
-    docId: null,
+    filleId: null,
   });
 
 
-  const handleClick = (event, docId) => {
+
+  const handleClick = (event, filleId) => {
     setPopoverState({
       anchorEl: event.currentTarget,
-      docId,
+      filleId,
     });
   };
   const handleClose = () => {
     setPopoverState({
       anchorEl: null,
-      docId: null,
+      filleId: null,
     });
   }
-  const isPopoverOpen = (docId) => popoverState.docId === docId;
+  const isPopoverOpen = (filleId) => popoverState.filleId === filleId;
   const id = open ? 'simple-popover' : undefined;
 
 
-  const downloadDoc = (url, name) => {
-    const a = document.createElement('a');
+  const downloadfille = (url, name) => {
+    const a = filleument.createElement('a');
     a.href = url;
     a.download = name;
     a.click();
@@ -52,17 +53,36 @@ const FileShow = ({ attachments }) => {
     window.open(url, "_blank");
   };
 
+  const handleCut = (item) => {
+    setClipboard({
+      action: 'cut',
+      item,
+      type: 'file'  // or 'folder' depending on component
+    });
+    handleClose();
+  };
+
+  const handleCopy = (item) => {
+    setClipboard({
+      action: 'copy',
+      item,
+      type: 'file'
+    });
+    handleClose();
+  };
+
+
 
 
 
   return (
     <>
-      {attachments.map((doc) => {
-        const fileUrl = `/uploads/${doc.file_path}`;
+      {attachments.map((fille) => {
+        const fileUrl = `/uploads/${fille.file_path}`;
         const isPdf = fileUrl.endsWith(".pdf");
 
         return (
-          <Grid item xs={12} sm={6} md={3} key={`doc-${doc.file_id}`}>
+          <Grid item xs={12} sm={6} md={3} key={`fille-${fille.file_id}`}>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
               <Box
                 sx={{
@@ -78,7 +98,7 @@ const FileShow = ({ attachments }) => {
                 ) : (
                   <img
                     src={fileUrl}
-                    alt={doc.file_name}
+                    alt={fille.file_name}
                     style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                   />
                 )}
@@ -86,10 +106,10 @@ const FileShow = ({ attachments }) => {
 
               <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
                 <Typography variant="subtitle1" fontWeight="bold" noWrap>
-                  {doc.file_name}
+                  {fille.file_name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" noWrap>
-                  {doc.details}
+                  {fille.details}
                 </Typography>
               </CardContent>
 
@@ -97,27 +117,27 @@ const FileShow = ({ attachments }) => {
                 <Button variant="contained" size="small" onClick={() => openInNewTab(fileUrl)}>
                   Open
                 </Button>
-                <Button variant="outlined" size="small" onClick={() => downloadDoc(fileUrl, doc.file_name)}>
+                <Button variant="outlined" size="small" onClick={() => downloadfille(fileUrl, fille.file_name)}>
                   Download
                 </Button>
-                <Button aria-describedby={`popover-${doc.file_id}`}
-                  variant="contained" onClick={(e) => handleClick(e, doc.file_id)}>
+                <Button aria-describedby={`popover-${fille.file_id}`}
+                  variant="contained" onClick={(e) => handleClick(e, fille.file_id)}>
                   ...
                 </Button>
                 <Popover
-                  id={`popover-${doc.file_id}`}
-                  open={isPopoverOpen(doc.file_id)}
+                  id={`popover-${fille.file_id}`}
+                  open={isPopoverOpen(fille.file_id)}
                   anchorEl={popoverState.anchorEl}
                   onClose={handleClose}
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 >
                   <Paper sx={{ width: 200 }}>
                     <MenuList>
-                      <MenuItem>
+                      <MenuItem onClick={() => handleCut(folder)}>
                         <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
                         <ListItemText>Cut</ListItemText>
                       </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => handleCopy(folder)}>
                         <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
                         <ListItemText>Copy</ListItemText>
                       </MenuItem>
@@ -132,7 +152,7 @@ const FileShow = ({ attachments }) => {
 
               <Typography variant="caption" sx={{ textAlign: "right", p: 1, fontSize: '11px', color: 'gray' }}>
                 {/* Optional: If you want to calculate file size or created date */}
-                Uploaded by user ID: {doc.user_id}
+                Uploaded by user ID: {fille.user_id}
               </Typography>
             </Card>
           </Grid>

@@ -35,6 +35,13 @@ const ShowAttachments = () => {
   const [parentId, setParentId] = useState(null);
   const [folderPath, setFolderPath] = useState([]);
 
+  const [clipboard, setClipboard] = useState({
+    action: null, // 'cut' or 'copy'
+    item: null,   // the folder/file object
+    type: null,   // 'folder' or 'file'
+  });
+
+
 
 
 
@@ -108,17 +115,87 @@ const ShowAttachments = () => {
   };
 
 
+  // const handlePaste = async () => {
+  //   if (!clipboard.item) return;
+
+  //   try {
+  //     if (clipboard.type === 'file') {
+  //       await axios.post("/api/paste-file", {
+  //         fileId: clipboard.item.file_id,
+  //         action: clipboard.action,
+  //         targetFolderId: currentFolderId // Your active folder
+  //       });
+  //     } else if (clipboard.type === 'folder') {
+  //       await axios.post("/api/paste-folder", {
+  //         folderId: clipboard.item.id,
+  //         action: clipboard.action,
+  //         targetFolderId: currentFolderId
+  //       });
+  //     }
+
+  //     // Clear clipboard and refetch data
+  //     setClipboard({ action: null, item: null, type: null });
+  //     fetchData(); // reload folders/files
+  //   } catch (err) {
+  //     console.error("Paste failed:", err);
+  //   }
+  // };
+
+  const handlePaste = async (targetFolder) => {
+    if (!clipboard.item || !clipboard.action || !clipboard.type) return;
+
+    const endpoint = clipboard.action === 'cut'
+      ? `${backendUrl}/move`
+      : `${backendUrl}/copy`;
+
+    try {
+      await axios.post(endpoint, {
+        item_id: clipboard.item.id,        // backend must accept this
+        item_type: clipboard.type,         // 'file' or 'folder'
+        target_folder_id: targetFolder.id  // folder to paste into
+      });
+
+      // Clear clipboard and refresh data
+      setClipboard({ action: null, item: null, type: null });
+      fetchData();  // Replace with your actual data refresh function
+    } catch (err) {
+      console.error("Paste failed", err);
+    }
+  };
+
+
+  console.log("clipboard", clipboard);
 
 
   return (
     <Box sx={{ minHeight: "100vh" }} onContextMenu={handleContextMenu}>
       {menuPosition && (
+        // <ContextMenu
+        //   menuPosition={menuPosition}
+        //   handleContextClose={handleContextMenuClose}
+        //   path={folderPath}
+        //   parent_id={parentId}
+        // />
+
+        // <ContextMenu
+        //   clipboard={clipboard}
+        //   menuPosition={menuPosition}
+        //   handleContextClose={handleContextMenuClose}
+        //   path={folderPath}
+        //   parent_id={parentId}
+        //   handlePaste={handlePaste}
+        //   folder={folders}
+        // />
         <ContextMenu
           menuPosition={menuPosition}
           handleContextClose={handleContextMenuClose}
+          clipboard={clipboard}
+          handlePaste={handlePaste}
           path={folderPath}
           parent_id={parentId}
+          folder={folders}
         />
+
       )}
 
 
@@ -142,10 +219,30 @@ const ShowAttachments = () => {
 
 
       <Grid container spacing={2} p={3}>
-        {/* FOLDERS */}
-        <FolderShow folders={folders} handleFolderClick={(folder) => handleFolderClick(folder)} />
-        {/* FILES */}
-        <FileShow attachments={attachments} />
+        {/* <FolderShow
+          folders={folders}
+          handleFolderClick={handleFolderClick}
+          clipboard={clipboard}
+          setClipboard={setClipboard}
+        />
+        <FileShow
+          attachments={attachments}
+          clipboard={clipboard}
+          setClipboard={setClipboard}
+        /> */}
+        <FolderShow
+          folders={folders}
+          handleFolderClick={handleFolderClick}
+          setClipboard={setClipboard}
+        />
+
+        <FileShow
+          attachments={attachments}
+          setClipboard={setClipboard}
+        />
+
+
+
       </Grid>
     </Box>
   );

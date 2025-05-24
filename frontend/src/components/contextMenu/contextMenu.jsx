@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-function ContextMenu({ handleContextClose, menuPosition, path, parent_id }) {
+function ContextMenu({ handleContextClose, menuPosition, path, parent_id, clipboard, handlePaste, folder }) {
   const [createFolderModal, setCreateFolderModal] = useState(false);
   const [folderName, setFolderName] = useState("");
 
@@ -44,6 +44,9 @@ function ContextMenu({ handleContextClose, menuPosition, path, parent_id }) {
     handleContextClose();
   };
 
+  console.log("contex", clipboard);
+
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -55,7 +58,7 @@ function ContextMenu({ handleContextClose, menuPosition, path, parent_id }) {
     boxShadow: 24,
     p: 4,
   };
-
+  // console.log("hello", clipboard);
   return (
     <>
       <Menu
@@ -66,8 +69,17 @@ function ContextMenu({ handleContextClose, menuPosition, path, parent_id }) {
           menuPosition ? { top: menuPosition.top, left: menuPosition.left } : undefined
         }
       >
+        <MenuItem
+          disabled={!clipboard.item}
+          onClick={() => {
+            handlePaste(folder);
+            handleContextClose();
+          }}
+        >
+          Paste
+        </MenuItem>
+
         <MenuItem onClick={handleCreateFolder}>Create Folder</MenuItem>
-        <Divider />
         <MenuItem onClick={handleUploadDocument}>Upload Document</MenuItem>
       </Menu>
 

@@ -13,13 +13,17 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import DescriptionIcon from '@mui/icons-material/Description';
 import axios from "axios";
 
-const FolderShow = ({ folders, handleFolderClick }) => {
+
+const FolderShow = ({ folders, handleFolderClick, setClipboard }) => {
   const [folderData, setFolderData] = useState([]);
+  const backendUrl = import.meta.env.VITE_ADRESS;
   const [folderAnchorEl, setfolderAnchorEl] = useState();
   const [folderPopoverState, setfolderPopoverState] = useState({
     folderAnchorEl: null,
     folderPopId: null,
   });
+
+
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleFolderbuttonClick = (event, folderPopId) => {
@@ -39,6 +43,29 @@ const FolderShow = ({ folders, handleFolderClick }) => {
 
   const isFolderPopoverOpen = (folderPopId) => folderPopoverState.folderPopId === folderPopId;
   const f_id = open ? 'simple-popover' : undefined;
+
+  const handleCut = (item) => {
+    setClipboard({
+      action: 'cut',
+      item,
+      type: 'folder'  // or 'folder' depending on component
+
+    });
+    handlePopverClose();
+    console.log("cut", item)
+  };
+
+  const handleCopy = (item) => {
+    setClipboard({
+      action: 'copy',
+      item,
+      type: 'folder'
+    });
+    handlePopverClose();
+  };
+
+
+
 
 
   return (
@@ -67,11 +94,11 @@ const FolderShow = ({ folders, handleFolderClick }) => {
           >
             <Paper sx={{ width: 200 }}>
               <MenuList>
-                <MenuItem>
+                <MenuItem onClick={() => handleCut(folder)}>
                   <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
                   <ListItemText>Cut</ListItemText>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => handleCopy(folder)} >
                   <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
                   <ListItemText>Copy</ListItemText>
                 </MenuItem>
