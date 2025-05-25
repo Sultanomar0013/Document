@@ -14,7 +14,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import axios from "axios";
 
 
-const FolderShow = ({ folders, handleFolderClick, setClipboard }) => {
+const FolderShow = ({ folders, handleFolderClick, setClipboard, folderPath, setOldpath }) => {
   const [folderData, setFolderData] = useState([]);
   const backendUrl = import.meta.env.VITE_ADRESS;
   const [folderAnchorEl, setfolderAnchorEl] = useState();
@@ -51,8 +51,10 @@ const FolderShow = ({ folders, handleFolderClick, setClipboard }) => {
       type: 'folder'  // or 'folder' depending on component
 
     });
+    setOldpath(folderPath);
     handlePopverClose();
     console.log("cut", item)
+    console.log("item", item);
   };
 
   const handleCopy = (item) => {
@@ -81,13 +83,13 @@ const FolderShow = ({ folders, handleFolderClick, setClipboard }) => {
             </Typography>
           </CardContent>
 
-          <Button aria-describedby={`popover-${folder.file_id}`}
-            variant="contained" onClick={(e) => handleFolderbuttonClick(e, folder.file_id)}>
+          <Button aria-describedby={`popover-${folder.id}`}
+            variant="contained" onClick={(e) => handleFolderbuttonClick(e, folder.id)}>
             ...
           </Button>
           <Popover
-            id={`popover-${folder.file_id}`}
-            open={isFolderPopoverOpen(folder.file_id)}
+            id={`popover-${folder.id}`}
+            open={isFolderPopoverOpen(folder.id)}
             anchorEl={folderPopoverState.folderAnchorEl}
             onClose={handlePopverClose}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}

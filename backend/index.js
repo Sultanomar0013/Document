@@ -12,6 +12,7 @@ const categoryRouter = require('./routes/categoryRoutes');
 const documentRoutes = require('./routes/documentRoutes');
 const folderRoutes = require('./routes/folderRoute');
 const cookieParser = require('cookie-parser');
+const cutCopyRoutes = require('./routes/cutCopyRoutes');
 
 
 
@@ -19,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 
- 
+
 app.use(cors({
   origin: "http://localhost:5173",
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -37,6 +38,7 @@ app.use('/category', categoryRouter);
 app.use('/document', express.static('uploads'));
 app.use('/document', documentRoutes);
 app.use('/folder', folderRoutes);
+app.use('/cutcopy', cutCopyRoutes);
 
 
 

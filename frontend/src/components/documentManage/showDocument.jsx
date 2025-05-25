@@ -40,7 +40,7 @@ const ShowAttachments = () => {
     item: null,   // the folder/file object
     type: null,   // 'folder' or 'file'
   });
-
+  const [oldPath, setOldpath] = useState([]); // to store old path for paste operation
 
 
 
@@ -115,49 +115,28 @@ const ShowAttachments = () => {
   };
 
 
-  // const handlePaste = async () => {
-  //   if (!clipboard.item) return;
-
-  //   try {
-  //     if (clipboard.type === 'file') {
-  //       await axios.post("/api/paste-file", {
-  //         fileId: clipboard.item.file_id,
-  //         action: clipboard.action,
-  //         targetFolderId: currentFolderId // Your active folder
-  //       });
-  //     } else if (clipboard.type === 'folder') {
-  //       await axios.post("/api/paste-folder", {
-  //         folderId: clipboard.item.id,
-  //         action: clipboard.action,
-  //         targetFolderId: currentFolderId
-  //       });
-  //     }
-
-  //     // Clear clipboard and refetch data
-  //     setClipboard({ action: null, item: null, type: null });
-  //     fetchData(); // reload folders/files
-  //   } catch (err) {
-  //     console.error("Paste failed:", err);
-  //   }
-  // };
-
   const handlePaste = async (targetFolder) => {
     if (!clipboard.item || !clipboard.action || !clipboard.type) return;
 
     const endpoint = clipboard.action === 'cut'
-      ? `${backendUrl}/move`
-      : `${backendUrl}/copy`;
+      ? `${backendUrl}cutcopy/cut`
+      : `${backendUrl}cutcopy/copy`;
 
     try {
       await axios.post(endpoint, {
         item_id: clipboard.item.id,        // backend must accept this
         item_type: clipboard.type,         // 'file' or 'folder'
-        target_folder_id: targetFolder.id  // folder to paste into
+        target_folder_id: targetFolder.id,  // folder to paste into
+        path: folderPath.map(folder => folder.id).join('/'),
+        oldPath: oldPath.map(folder => folder.id).join('/')
+      }, {
+        withCredentials: true,
       });
+
 
       // Clear clipboard and refresh data
       setClipboard({ action: null, item: null, type: null });
-      fetchData();  // Replace with your actual data refresh function
+      // fetchData();  // Replace with your actual data refresh function
     } catch (err) {
       console.error("Paste failed", err);
     }
@@ -234,6 +213,8 @@ const ShowAttachments = () => {
           folders={folders}
           handleFolderClick={handleFolderClick}
           setClipboard={setClipboard}
+          folderPath={folderPath}
+          setOldpath={setOldpath}
         />
 
         <FileShow
