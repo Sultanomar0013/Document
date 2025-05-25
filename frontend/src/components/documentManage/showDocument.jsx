@@ -27,7 +27,7 @@ const ShowAttachments = () => {
   const theme = useTheme();
   const backendUrl = import.meta.env.VITE_ADRESS;
   const [folders, setFolders] = useState([]);
-  const [attachments, setAttachments] = useState([]);
+  const [attachments, setAttachments] = useState([]); 
   const [menuPosition, setMenuPosition] = useState(null);
   // const [currentFolderId, setCurrentFolderId] = useState(null);
   const [userId, setUserId] = useState(null);
