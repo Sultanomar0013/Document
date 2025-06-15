@@ -27,7 +27,7 @@ const ShowAttachments = () => {
   const theme = useTheme();
   const backendUrl = import.meta.env.VITE_ADRESS;
   const [folders, setFolders] = useState([]);
-  const [attachments, setAttachments] = useState([]); 
+  const [attachments, setAttachments] = useState([]);
   const [menuPosition, setMenuPosition] = useState(null);
   // const [currentFolderId, setCurrentFolderId] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -116,30 +116,32 @@ const ShowAttachments = () => {
 
 
   const handlePaste = async (targetFolder) => {
-    if (!clipboard.item || !clipboard.action || !clipboard.type) return;
+    console.log('handlePaste', targetFolder);
+    // if (!clipboard.item || !clipboard.action || !clipboard.type) return;
 
-    const endpoint = clipboard.action === 'cut'
-      ? `${backendUrl}cutcopy/cut`
-      : `${backendUrl}cutcopy/copy`;
+    // const endpoint = clipboard.action === 'cut'
+    //   ? `${backendUrl}cutcopy/cut`
+    //   : `${backendUrl}cutcopy/copy`;
 
-    try {
-      await axios.post(endpoint, {
-        item_id: clipboard.item.id,        // backend must accept this
-        item_type: clipboard.type,         // 'file' or 'folder'
-        target_folder_id: targetFolder.id,  // folder to paste into
-        path: folderPath.map(folder => folder.id).join('/'),
-        oldPath: oldPath.map(folder => folder.id).join('/')
-      }, {
-        withCredentials: true,
-      });
+    // try {
+    //   await axios.post(endpoint, {
+    //     item_id: clipboard.item.id,        // backend must accept this
+    //     item_type: clipboard.type,         // 'file' or 'folder'
+    //     target_folder_id: targetFolder.id,  // folder to paste into
+    //     newPath: folderPath.map(folder => folder.id).join('/'),
+    //     oldPath: oldPath.map(folder => folder.id).join('/'),
+    //     folder: clipboard.item
+    //   }, {
+    //     withCredentials: true,
+    //   });
 
 
-      // Clear clipboard and refresh data
-      setClipboard({ action: null, item: null, type: null });
-      // fetchData();  // Replace with your actual data refresh function
-    } catch (err) {
-      console.error("Paste failed", err);
-    }
+    //   // Clear clipboard and refresh data
+    //   setClipboard({ action: null, item: null, type: null });
+    //   // fetchData();  // Replace with your actual data refresh function
+    // } catch (err) {
+    //   console.error("Paste failed", err);
+    // }
   };
 
 

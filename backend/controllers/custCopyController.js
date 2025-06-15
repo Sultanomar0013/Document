@@ -6,21 +6,23 @@ const fs = require('fs');
 class cutCopyController {
 
   static async cut(req, res) {
-    const { item_id, item_type,target_folder_id, path, oldPath } = req.body;
+    const { item_id, item_type, target_folder_id, newPath, oldPath, folder } = req.body;
     const userId = req.user.id;
     console.log('cutCopyController:', req.body);
-    console.log('path', path);
+    console.log('newPath', newPath);
     console.log('oldPath', oldPath);
-    console.log('target_folder_id',target_folder_id);
+    console.log('target_folder_id', target_folder_id);
+    console.log('folder', folder);
 
-
-    if (!item_id || !item_type || !path || !userId) {
+    if (!item_id || !item_type || !newPath || !userId) {
       return res.status(400).json({ success: false, message: 'Document ID, folder ID, action, and user ID are required' });
     }
 
-    
-    const fullOldPath = path.join(__dirname, '..',"uploads", oldPath, item_id);  // uploads/1/2
-    const fullNewPath = path.join(__dirname, '..',"uploads", newPath, item_id);  
+
+    const fullOldPath = path.join(__dirname, '..', "uploads", String(oldPath), String(item_id));  // uploads/1/2
+    const fullNewPath = path.join(__dirname, '..', "uploads", String(newPath), String(item_id));
+    console.log('fullOldPath', fullOldPath);
+    console.log('fullNewPath', fullNewPath);
 
     if (item_type === 'folder' && item_id === target_folder_id) {
       return res.status(400).json({ success: false, message: 'Cannot move a folder into itself' });
@@ -30,9 +32,6 @@ class cutCopyController {
 
       const query = 'UPDATE folder_info SET parent_id = ? WHERE id = ? AND user_id = ?';
       try {
-
-
-
         // Check if source exists
         if (!fs.existsSync(fullOldPath)) {
           throw new Error(`Source folder does not exist: ${oldPath}`);
