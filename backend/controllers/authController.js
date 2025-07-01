@@ -4,6 +4,8 @@ const saltRounds = 10;
 
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -26,7 +28,12 @@ class AuthController {
       const [result] = await db.query(query, [email, userName, hashedPassword]);
       const newUserId = result.insertId;
 
-      const Folderquery = 'INSERT INTO folder_info (folder_name,parent_id,user_id ) VALUES (?, ?)';
+      const userFolderPath = path.join(__dirname, '..', 'uploads', newUserId.toString());
+      if (!fs.existsSync(userFolderPath)) {
+        fs.mkdirSync(userFolderPath, { recursive: true });
+      }
+
+      const Folderquery = 'INSERT INTO folder_info (folder_name,parent_id,user_id ) VALUES (?, ?, ?)';
       const [folderresult] = await db.query(Folderquery, [newUserId, '0', newUserId]);
       // Optional: attach inserted user info to the request
       req.user = {

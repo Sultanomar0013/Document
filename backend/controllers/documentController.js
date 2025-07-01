@@ -3,30 +3,35 @@ const path = require('path');
 const fs = require('fs');
 
 class DocumentController {
-  static async uploadDocument(req, res) {
-    const { fileName, details, categoryId } = req.body;
+
+  static async uploadDocument(req, res, next) {
+    console.log('Upload Document Request');
+    const { fileName, details, categoryId, uploadPath } = req.body;
     const entry_by = req.user.id;
 
-    if (!fileName || !categoryId || !req.file) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
+    console.log(req.body.uploadPath);
 
-    const savedFileName = req.file.filename;
+    //   if (!fileName || !categoryId || !req.file || uploadPath === undefined || uploadPath === null || !uploadPath || entry_by) {
+    //     return res.status(400).json({ message: 'Missing required fields' });
+    //   }
 
-    const query = `
-    INSERT INTO documents (file_name, details, category_id, file_path, entry_by)
-    VALUES (?, ?, ?, ?, ?)
-  `;
+    //   const savedFileName = req.file.filename;
 
-    const values = [fileName, details, categoryId, savedFileName, entry_by];
+    //   const query = `
+    //   INSERT INTO files (file_name, details, category_id, file_path, entry_by)
+    //   VALUES (?, ?, ?, ?, ?)
+    // `;
 
-    try {
-      const [result] = await db.query(query, values);
-      return res.status(200).json({ message: 'File uploaded and saved successfully' });
-    } catch (err) {
-      console.error('DB Error:', err);
-      return res.status(500).json({ message: 'Failed to save document info' });
-    }
+    //   const values = [fileName, details, categoryId, savedFileName, entry_by];
+
+    //   try {
+    //     const [result] = await db.query(query, values);
+    //     return res.status(200).json({ message: 'File uploaded and saved successfully' });
+    //   } catch (err) {
+    //     console.error('DB Error:', err);
+    //     return res.status(500).json({ message: 'Failed to save document info' });
+    //   }
+
   }
 
 

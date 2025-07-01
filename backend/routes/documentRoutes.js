@@ -12,7 +12,8 @@ const router = express.Router();
 
 const upload = require('../controllers/multerController');
 // POST /upload
-router.post('/uploadDoc', authenticateToken.authToken, DocumentAuthToken.docFileSizeChecker, upload.single('file'), DocumentController.uploadDocument);
+// router.post('/uploadDoc', authenticateToken.authToken, DocumentAuthToken.docFileSizeChecker, DocumentController.uploadDocument, upload.single('file'));
+router.post('/uploadDoc', authenticateToken.authToken, DocumentController.uploadDocument, upload.single('file'));
 // GET /showDoc
 //router.get('/showDoc', authenticateToken.authToken, DocumentController.showDocument);
 

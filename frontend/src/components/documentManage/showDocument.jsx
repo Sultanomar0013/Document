@@ -116,7 +116,7 @@ const ShowAttachments = () => {
 
 
   const handlePaste = async (targetFolder) => {
-    console.log('handlePaste', targetFolder);
+    // console.log('handlePaste', targetFolder);
     // if (!clipboard.item || !clipboard.action || !clipboard.type) return;
 
     // const endpoint = clipboard.action === 'cut'
@@ -145,28 +145,12 @@ const ShowAttachments = () => {
   };
 
 
-  console.log("clipboard", clipboard);
+  // console.log("clipboard", clipboard);
 
 
   return (
     <Box sx={{ minHeight: "100vh" }} onContextMenu={handleContextMenu}>
       {menuPosition && (
-        // <ContextMenu
-        //   menuPosition={menuPosition}
-        //   handleContextClose={handleContextMenuClose}
-        //   path={folderPath}
-        //   parent_id={parentId}
-        // />
-
-        // <ContextMenu
-        //   clipboard={clipboard}
-        //   menuPosition={menuPosition}
-        //   handleContextClose={handleContextMenuClose}
-        //   path={folderPath}
-        //   parent_id={parentId}
-        //   handlePaste={handlePaste}
-        //   folder={folders}
-        // />
         <ContextMenu
           menuPosition={menuPosition}
           handleContextClose={handleContextMenuClose}
@@ -176,7 +160,6 @@ const ShowAttachments = () => {
           parent_id={parentId}
           folder={folders}
         />
-
       )}
 
 
@@ -217,11 +200,13 @@ const ShowAttachments = () => {
           setClipboard={setClipboard}
           folderPath={folderPath}
           setOldpath={setOldpath}
+          handleContextMenu={handleContextMenu}
         />
 
         <FileShow
           attachments={attachments}
           setClipboard={setClipboard}
+          handleContextMenu={handleContextMenu}
         />
 
 

@@ -1,22 +1,24 @@
 import { useState, useEffect } from "react";
-import { AppBar, Toolbar, IconButton, Typography, Button, Menu, MenuItem } from "@mui/material";
+import { Box, Grid, AppBar, Toolbar, IconButton, Typography, Button, Menu, MenuItem } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Brightness4Icon from "@mui/icons-material/Brightness4"; // Dark mode icon
-import Brightness7Icon from "@mui/icons-material/Brightness7"; // Light mode icon
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { getMenuItemStyles } from "./theme/globalStyle";
 import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
+
+import { getMenuItems } from "./menuOption";
+
+// import SearchComponent from "./baseComponent/searchBar";
+// import logo from "../media/images/logo.png";
 
 
 import { Brightness4, Brightness7, ColorLens, ExpandMore } from "@mui/icons-material";
 
 
 const themeIcons = {
-  light: <Brightness7 />,
+  light: <Brightness7 sx={{ color: '#000' }} />,
   dark: <Brightness4 />,
-  green: <ColorLens />,
+  green: <ColorLens sx={{ color: 'green' }} />,
 };
 
 
@@ -30,19 +32,22 @@ const NavBar = ({ toggleSidebar, mode, toggleTheme }) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const menuItems = getMenuItems(location.pathname);
 
 
   const [themeanchorEl, setThemeAnchorEl] = useState(null);
   const themeopen = Boolean(themeanchorEl);
   const storeTheme = localStorage.getItem("customtheme");
-  const [selectedTheme, setSelectedTheme] = useState(themeIcons[localStorage.getItem("customtheme")] || <Brightness7 />);
+  const [selectedTheme, setSelectedTheme] = useState(themeIcons[localStorage.getItem("customtheme")] || <Brightness7 sx={{ color: '#000' }} />);
 
   const handleThemeClick = (event) => {
     setThemeAnchorEl(event.currentTarget);
   };
 
-
+  const handleSearch = (query) => {
+    console.log("Search query:", query);
+    // You can filter a list, fetch data, etc.
+  };
 
   const handleThemeClose = (theme) => {
 
@@ -87,11 +92,38 @@ const NavBar = ({ toggleSidebar, mode, toggleTheme }) => {
 
 
   return (
-    <AppBar position="fixed" sx={{ height: "64px", zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar position="fixed" sx={{
+      height: "60px",
+      zIndex: (theme) => theme.zIndex.drawer + 1,
+      backgroundColor: theme.palette.background.default,
+      boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.1)", // remove default shadow
+      // border: "2px solid rgba(0, 0, 0, 0.2)", // or your desired color
+      // backdropFilter: "blur(6px)", // optional: adds blur for glass effect
+      width: { xs: '100%', md: 'calc(100% - 240px)' },
+      ml: { xs: 0, md: '240px' },
+
+    }}>
+
+
       <Toolbar>
-        <IconButton edge="start" color="inherit" onClick={toggleSidebar}>
-          <MenuIcon />
+
+        <IconButton edge="start" color="inherit" onClick={toggleSidebar} sx={{ display: { xs: 'block', md: 'none' } }}>
+          <MenuIcon sx={{ color: theme.palette.primary.main }} />
         </IconButton>
+        {/* <Box
+          component="img"
+          src={logo}
+          alt="Logo"
+          sx={{
+            height: 60,
+            mr: 2,
+          }}
+        /> */}
+
+
+        {/* <Grid2 style={{ width: "250px", }}>
+          <SearchComponent menuItems={menuItems} sx={{ height: "10px" }} />
+        </Grid2> */}
 
         <Button
           variant="contained"

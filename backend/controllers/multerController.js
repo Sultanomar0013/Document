@@ -8,7 +8,8 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const userId = req.user.id;
-    const userFolder = path.join(__dirname, '..', 'uploads', String(userId));
+    const uploadingPath = req.body.uploadPath;
+    const userFolder = path.join(__dirname, '..', 'uploads', uploadingPath, String(userId));
 
     // Create folder if it doesn't exist
     fs.mkdir(userFolder, { recursive: true }, (err) => {

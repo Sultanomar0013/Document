@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse, useMediaQuery } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -13,10 +13,10 @@ const drawerWidth = 240;
 
 const SideBar = ({ open, toggleSidebar }) => {
 
-  const location = useLocation(); 
+  const location = useLocation();
   const theme = useTheme();
   const [openMenus, setOpenMenus] = useState({});
-
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const menuItems = getMenuItems(location.pathname);
 
   // const handleToggle = (segment) => {
@@ -25,23 +25,33 @@ const SideBar = ({ open, toggleSidebar }) => {
 
   const handleToggle = (segment) => {
     setOpenMenus((prev) => {
-      // Close all menus except the one being clicked
       const newOpenMenus = { [segment]: !prev[segment] };
-
-      // Optionally, collapse any other open menus
       Object.keys(prev).forEach((key) => {
         if (key !== segment) {
           newOpenMenus[key] = false; // Close other menus
         }
       });
-
       return newOpenMenus;
     });
   };
 
 
+  useEffect(() => {
+    const currentPath = location.pathname;
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+    menuItems.forEach((item) => {
+      if (item.children) {
+        const found = item.children.find(child => child.path === currentPath);
+        if (found) {
+          setOpenMenus((prev) => ({ ...prev, [item.segment]: true }));
+        } else {
+          setOpenMenus((prev) => ({ ...prev, [item.segment]: false }));
+        }
+      }
+    });
+  }, [location.pathname]);
+
+
 
 
 
@@ -56,12 +66,11 @@ const SideBar = ({ open, toggleSidebar }) => {
   return (
     <Drawer
       sx={{
-
         width: open ? drawerWidth : 0,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: drawerWidth,
-          mt: "64px",
+          mt: { xs: "60px", md: "0px" }
         },
       }}
       variant={isSmallScreen ? "temporary" : "persistent"}
@@ -79,13 +88,13 @@ const SideBar = ({ open, toggleSidebar }) => {
                 onClick={isSmallScreen ? () => handleClick() : undefined}
                 sx={{
                   backgroundColor:
-                  location.pathname === path
+                    location.pathname === path
                       ? theme.palette.primary.main
                       : "",
 
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.main
-                },
+                  "&:hover": {
+                    backgroundColor: theme.palette.secondary.main
+                  },
                   textDecoration: "none",
                   color: "inherit",
                 }}
@@ -96,15 +105,15 @@ const SideBar = ({ open, toggleSidebar }) => {
             ) : (
               // Parent menu item with children
               <>
-                <ListItem onClick={() => handleToggle(segment)}   sx={{
+                <ListItem onClick={() => handleToggle(segment)} sx={{
 
-                          backgroundColor: "inherit",
-                            "&:hover": {
-                              backgroundColor: theme.palette.secondary.main
-                            },
-                          textDecoration: "none",
-                          color: "inherit",
-                        }}>
+                  backgroundColor: "inherit",
+                  "&:hover": {
+                    backgroundColor: theme.palette.secondary.main
+                  },
+                  textDecoration: "none",
+                  color: "inherit",
+                }}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={title} />
                   {openMenus[segment] ? <ExpandLess /> : <ExpandMore />}
@@ -116,17 +125,17 @@ const SideBar = ({ open, toggleSidebar }) => {
                         key={childSegment}
                         component={Link}
                         to={childPath}
-                        onClick={isSmallScreen ? () => handleClick(): undefined}
+                        onClick={isSmallScreen ? () => handleClick() : undefined}
                         sx={{
                           pl: 4,
                           backgroundColor:
-                              location.pathname === childPath
-                                  ? theme.palette.primary.main
-                                  : "",
+                            location.pathname === childPath
+                              ? theme.palette.primary.main
+                              : "",
 
-                            "&:hover": {
-                              backgroundColor: theme.palette.secondary.main
-                            },
+                          "&:hover": {
+                            backgroundColor: theme.palette.secondary.main
+                          },
                           textDecoration: "none",
                           color: "inherit",
                         }}

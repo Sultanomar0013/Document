@@ -3,9 +3,11 @@ import {
   Grid, Menu, MenuItem, Divider, Modal, Box, Typography, TextField, Button
 } from '@mui/material';
 import axios from 'axios';
+import FileUploadModal from '../documentManage/docUploadModal'; // Import the new modal component
 
 function ContextMenu({ handleContextClose, menuPosition, path, parent_id, clipboard, handlePaste, folder }) {
   const [createFolderModal, setCreateFolderModal] = useState(false);
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
 
   // Open Modal with clean input
@@ -40,11 +42,12 @@ function ContextMenu({ handleContextClose, menuPosition, path, parent_id, clipbo
   };
 
   const handleUploadDocument = () => {
-    alert('Upload Document clicked');
-    handleContextClose();
+    setUploadModalOpen(true);
+    console.log(uploadModalOpen);
+    // handleContextClose();
   };
 
-  console.log("contex", clipboard);
+  // console.log("contex", clipboard);
 
 
   const style = {
@@ -107,6 +110,13 @@ function ContextMenu({ handleContextClose, menuPosition, path, parent_id, clipbo
           </form>
         </Box>
       </Modal>
+
+      <FileUploadModal
+        open={uploadModalOpen}
+        handleClose={() => setUploadModalOpen(false)}
+        parent_id={parent_id}
+        path={path}
+      />
     </>
   );
 }
