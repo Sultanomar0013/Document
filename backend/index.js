@@ -13,12 +13,16 @@ const documentRoutes = require('./routes/documentRoutes');
 const folderRoutes = require('./routes/folderRoute');
 const cookieParser = require('cookie-parser');
 const cutCopyRoutes = require('./routes/cutCopyRoutes');
+const syncDatabase = require('./model/syncModels');
+
+
 
 
 
 app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
+
 
 
 app.use(cors({
@@ -32,6 +36,9 @@ app.options('*', cors());
 dotenv.config();
 
 const server = http.createServer(app);
+
+syncDatabase();
+
 
 app.use('/user', userRoutes);
 app.use('/category', categoryRouter);
